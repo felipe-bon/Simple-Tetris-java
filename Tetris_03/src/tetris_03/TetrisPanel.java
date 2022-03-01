@@ -45,7 +45,7 @@ public class TetrisPanel extends JPanel implements ActionListener{
         this.setFocusable(true);
         this.addKeyListener(new adaptador_tecla());
         
-        this.level = 0;
+        this.level = 1;
         this.pontos = 0;
         this.linhas = 0;
        
@@ -89,10 +89,12 @@ public class TetrisPanel extends JPanel implements ActionListener{
     void desenha_tabuleiro(Graphics g){
         
         g.setColor(Color.LIGHT_GRAY);
-        g.setFont( new Font("Serif", Font.ROMAN_BASELINE, 50));
+        g.setFont( new Font("Serif", Font.ROMAN_BASELINE, 30));
         FontMetrics metrics = getFontMetrics(g.getFont());
-        g.drawString("PROXIMA: ",COMPRIMENTO_TELA/2+largura_quadro, 4*UNIDADE_DE_MEDIDA);
-           
+        g.drawString("NEXT: ",COMPRIMENTO_TELA/2+largura_quadro, 4*UNIDADE_DE_MEDIDA);
+        g.drawString("SCOORE: "+pontos,COMPRIMENTO_TELA/2-largura_quadro*2, ALTURA_TELA-4*UNIDADE_DE_MEDIDA);
+        g.drawString("LINES: "+linhas,COMPRIMENTO_TELA/2-largura_quadro*2, ALTURA_TELA-5*UNIDADE_DE_MEDIDA);
+        g.drawString("LEVEL: "+level,COMPRIMENTO_TELA/2-largura_quadro*2, ALTURA_TELA-6*UNIDADE_DE_MEDIDA);
         // desenha a caixa de proximo bloco uma vez
         for(int i = 0; i < 7; i++){
             for(int j = 0; j < 7; j++){
@@ -185,11 +187,11 @@ public class TetrisPanel extends JPanel implements ActionListener{
                         //System.out.println(bloco[tabuleiro.tabuleiro[i][j]].cor_P);
      
                     }
-                    System.out.print(tabuleiro.tabuleiro[i][j]+" ");
+                    //System.out.print(tabuleiro.tabuleiro[i][j]+" ");
                 }
-                System.out.print("\n");
+                //System.out.print("\n");
             }
-             System.out.print("\n\n\n");   
+             //System.out.print("\n\n\n");   
         }
         else
             fim_jogo(g);
@@ -197,8 +199,15 @@ public class TetrisPanel extends JPanel implements ActionListener{
     
     @Override
     public void actionPerformed(ActionEvent e){
+        
+        // esse metodo de contar os pontos bonificaa pontuação
+        // quando se tem mais de uma linha completada ao mesmo tempo        
+        int temp = tabuleiro.apaga_linha();
+        level = linhas/5;
+        linhas = temp+linhas;        
+        pontos = pontos + 100*temp*temp;
         tabuleiro.atualiza_tabuleiro();
-        if(rodando) {
+        if(rodando){
             if(tabuleiro.insere_bloco(bloco[atual])){
                 
                 atual = proximo;
@@ -235,10 +244,8 @@ public class TetrisPanel extends JPanel implements ActionListener{
                     
                 }              
                 contador[atual]++;                               
-            }
-            //checkApple();
-            //checkCollision();
-        } 
+            }            
+        }                    
         repaint();
     }
     

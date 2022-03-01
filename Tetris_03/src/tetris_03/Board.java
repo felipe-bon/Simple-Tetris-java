@@ -26,28 +26,35 @@ public class Board {
     // arrumar 
     public int apaga_linha(){
         
-        int j, i, k = -1;
-        // verifica qual linha está completa
-        for(i = 20; i > 1; i--){
+        int i, j, verifica = 0, r = 4, apagadas = 0;
+        int[] linhas = new int[4];
+        
+        for(i = 20; i > 0; i--){
             for(j = 1; j < 11; j++){
-                if(tabuleiro[i][j] == 0)
-                    break;
+                if(tabuleiro[i][j] != 0)    
+                    verifica++;               
             }
-            if(j == 10 && tabuleiro[i][j] != 0){
-                k = i;
-                break;
-            }
-        }  
-        if(k != -1){
-            for(i = k; i > 1; i--){
-                for(int l = 1; l < 11; l++){
-                    tabuleiro[k][l] = tabuleiro[k-1][l];
+            if(verifica == 10){
+                apagadas++;
+                r--;
+                linhas[r] = i;    
+            }            
+            verifica = 0;
+        }       
+        while(r != 4){
+            for(i = linhas[r]; i > 1; i--){
+                for(j = 1; j < 11; j++){
+                    tabuleiro[i][j] = tabuleiro[i-1][j];
                 }
             }
-            return 1;
+            r++;
         }
-        return -1;
+        
+        return apagadas;
+            
     }
+        
+    
     
     public void movimenta_bloco(Block bloco, int comando){
         
@@ -83,12 +90,14 @@ public class Board {
         
     }
     
-    public void atualiza_tabuleiro(){
-        apaga_linha();
+    public void atualiza_tabuleiro(){       
+         
         if(inicioY < 20)
             inicioY++;
         else
             inicioY = 0;
+        
+
     }
     
     public boolean colisao(Block bloco, int direcao){
@@ -140,7 +149,7 @@ public class Board {
                 }
             }
         }
-    
+        
         return false;   
     }
     
