@@ -30,7 +30,7 @@ public class Board {
         return 1;
     }
     
-    public void movimenta_bloco(int comando){
+    public void movimenta_bloco(Block bloco, int comando){
         
         switch (comando){
             
@@ -39,19 +39,27 @@ public class Board {
             break;
             
             case 2:
-                
+            if(colisao(bloco, comando)){
+                inicioX--;
+            }    
             break;
             
             case 3:
-                
+            if(colisao(bloco, comando)){
+                inicioX++;
+            }    
             break;
             
             case 4:
-                
+            if(colisao(bloco, comando)){
+                //rotaciona_bloco();
+            }    
             break;
             
             case 5:
-                
+            if(colisao(bloco, comando)){
+                inicioY++;
+            }   
             break;
         }
         
@@ -64,8 +72,50 @@ public class Board {
             inicioY = 0;
     }
     
-    public boolean colisao(Block bloco){
+    public boolean colisao(Block bloco, int direcao){
        
+        switch (direcao){
+            
+            case 1:
+                
+            break;
+            
+            case 2:
+            for(int j = 0; j < bloco.get_Max_T(); j++){
+                for(int i = 0; i < bloco.get_Max_T(); i++){
+                    if(bloco.bloco_formato[i][j] != 0 && tabuleiro[i+inicioY][j+inicioX] != 0){
+                        return false;
+                    }
+                }
+            }
+            return true;
+  
+            case 3:
+            for(int i = bloco.get_Max_T()-1; i >= 0; i--){
+                for(int j = 0; j < bloco.get_Max_T();j++)
+                {
+                    
+                    if( bloco.bloco_formato[i][j] != 0 && tabuleiro[i+inicioY][j+inicioX+2] != 0 || (i== 21)){
+                        int h = i+inicioX+2;
+                        System.out.println(h);
+                        return false;
+                    }    
+                }
+            }   
+            return true;
+            
+            case 4:
+            int[][] pedaco = new int[4][4];
+            for(int i = 0; i < 4; i++)
+                for(int j = 0; j < 4; j++)
+                    pedaco[i][j] = tabuleiro[i+inicioY][j+inicioX];
+            bloco.rotaciona(pedaco, 1);
+            break;
+            
+        }
+        
+        
+        
         // testa a colisão para baixo;
         for(int i = bloco.get_Max_T()-1; i >= 0; i--){
             for(int j = bloco.get_Max_T()-1; j >= 0; j--){
@@ -80,7 +130,7 @@ public class Board {
     
     public boolean insere_bloco(Block bloco){
               
-        if(colisao(bloco)){
+        if(colisao(bloco, 5)){
             for(int ib = 0; ib < bloco.get_Max_T(); ib++){
                 for(int jb = 0; jb < bloco.get_Max_T(); jb++){
                     if(bloco.variacoes[bloco.variacao][ib][jb] > 0){
@@ -92,10 +142,16 @@ public class Board {
             inicioX = 4;
             return true;        
         }
-        return false;
-    
-    }          
+        return false;  
 
+//        if(inicioY == 16){
+//            inicioY = 0;
+//            inicioX = 4;
+//            return true;
+//        }
+//        else
+//            return false;
+    }                  
 }
 
 

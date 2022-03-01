@@ -25,11 +25,4 @@ public class Block_S extends Block{
         cor_P = new Color(0, 204, 204);       
         cor_E = new Color(6, 146, 146);                 
     }
-    
-    // funciona como um get do bloco rotacionado
-    @Override
-    int[][] rotaciona(int bloco[][], int sentido){
-        //if(rotação ok)
-        return variacoes[sentido+1];
-    }
 }

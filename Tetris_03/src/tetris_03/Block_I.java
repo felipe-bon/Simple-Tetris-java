@@ -28,11 +28,6 @@ public class Block_I extends Block{
     }
     
     // funciona como um get do bloco rotacionado
-    @Override
-    int[][] rotaciona(int bloco[][], int sentido){
-        //if(rotação ok)
-        return variacoes[sentido+1];
-    }
     
     
 }

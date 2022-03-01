@@ -22,9 +22,5 @@ public class Block_Cubo extends Block{
         cor_E = new Color(153, 0, 53);              
     }
     
-    // funciona como um get do bloco rotacionado
-    @Override
-    int[][] rotaciona(int bloco[][], int sentido){    
-        return variacoes[0];
-    }
+   
 }
