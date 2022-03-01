@@ -35,7 +35,7 @@ public class TetrisPanel extends JPanel implements ActionListener{
     int atual;
     int proximo;
     int contador[];
-    int delay = 120;
+    int delay = 150;
     Timer timer;
     Random r;
     
@@ -141,13 +141,13 @@ public class TetrisPanel extends JPanel implements ActionListener{
                     if(bloco[atual].variacoes[bloco[atual].variacao][ib][jb] != 0){
                        
                         g.setColor(bloco[atual].cor_E);
-                        g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+((jb+tabuleiro.inicioX)*UNIDADE_DE_MEDIDA+1), UNIDADE_DE_MEDIDA+(ib+tabuleiro.inicioY)*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA);    
+                        g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+((jb+tabuleiro.inicioX)*UNIDADE_DE_MEDIDA+1)-UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA+(ib+tabuleiro.inicioY)*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA);    
         
                         g.setColor(bloco[atual].cor_C);
-                        g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+((jb+tabuleiro.inicioX)*UNIDADE_DE_MEDIDA+1), UNIDADE_DE_MEDIDA+(ib+tabuleiro.inicioY)*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA-5, UNIDADE_DE_MEDIDA-5);    
+                        g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+((jb+tabuleiro.inicioX)*UNIDADE_DE_MEDIDA+1-UNIDADE_DE_MEDIDA), UNIDADE_DE_MEDIDA+(ib+tabuleiro.inicioY)*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA-5, UNIDADE_DE_MEDIDA-5);    
                         
                         g.setColor(bloco[atual].cor_P);
-                        g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+((jb+tabuleiro.inicioX)*UNIDADE_DE_MEDIDA+5), UNIDADE_DE_MEDIDA+(ib+tabuleiro.inicioY)*UNIDADE_DE_MEDIDA+5, UNIDADE_DE_MEDIDA-9, UNIDADE_DE_MEDIDA-10);                                            
+                        g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+((jb+tabuleiro.inicioX)*UNIDADE_DE_MEDIDA+5-UNIDADE_DE_MEDIDA), UNIDADE_DE_MEDIDA+(ib+tabuleiro.inicioY)*UNIDADE_DE_MEDIDA+5, UNIDADE_DE_MEDIDA-9, UNIDADE_DE_MEDIDA-10);                                            
                     }            
                 }
             }
@@ -157,15 +157,15 @@ public class TetrisPanel extends JPanel implements ActionListener{
                 for(int j = 0; j < 12; j++){
                     if(tabuleiro.tabuleiro[i][j] > 0){                        
                         g.setColor(bloco[tabuleiro.tabuleiro[i][j]].cor_E);
-                        g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+(j*UNIDADE_DE_MEDIDA+1), i*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA);    
+                        g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+(j*UNIDADE_DE_MEDIDA+1)-UNIDADE_DE_MEDIDA, i*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA);    
                         //System.out.println(bloco[tabuleiro.tabuleiro[i][j]].cor_C);
                         
                         g.setColor(bloco[tabuleiro.tabuleiro[i][j]].cor_C);
-                        g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+(j*UNIDADE_DE_MEDIDA+1), i*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA-5, UNIDADE_DE_MEDIDA-5);    
+                        g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+(j*UNIDADE_DE_MEDIDA+1)-UNIDADE_DE_MEDIDA, i*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA-5, UNIDADE_DE_MEDIDA-5);    
                         //System.out.println(bloco[tabuleiro.tabuleiro[i][j]].cor_E);
                         
                         g.setColor(bloco[tabuleiro.tabuleiro[i][j]].cor_P);
-                        g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+(j*UNIDADE_DE_MEDIDA+5), i*UNIDADE_DE_MEDIDA+5, UNIDADE_DE_MEDIDA-9, UNIDADE_DE_MEDIDA-10);                        
+                        g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+(j*UNIDADE_DE_MEDIDA+5)-UNIDADE_DE_MEDIDA, i*UNIDADE_DE_MEDIDA+5, UNIDADE_DE_MEDIDA-9, UNIDADE_DE_MEDIDA-10);                        
                         //System.out.println(bloco[tabuleiro.tabuleiro[i][j]].cor_P);
      
                         
@@ -173,14 +173,17 @@ public class TetrisPanel extends JPanel implements ActionListener{
                     // desenha as bordas do tabuleiro
                     else if(tabuleiro.tabuleiro[i][j] < 0){
                         g.setColor(Color.DARK_GRAY);
-                        g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+(j*UNIDADE_DE_MEDIDA+1-UNIDADE_DE_MEDIDA), i*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA);    
-        
-                        g.setColor(Color.LIGHT_GRAY);
-                        g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+(j*UNIDADE_DE_MEDIDA+1-UNIDADE_DE_MEDIDA), i*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA-5, UNIDADE_DE_MEDIDA-5);    
+                        g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+(j*UNIDADE_DE_MEDIDA+1)-UNIDADE_DE_MEDIDA, i*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA);    
+                        //System.out.println(bloco[tabuleiro.tabuleiro[i][j]].cor_C);
                         
-                        g.setColor(new Color(79,79,79));
+                        g.setColor(Color.LIGHT_GRAY);
+                        g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+(j*UNIDADE_DE_MEDIDA+1)-UNIDADE_DE_MEDIDA, i*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA-5, UNIDADE_DE_MEDIDA-5);    
+                        //System.out.println(bloco[tabuleiro.tabuleiro[i][j]].cor_E);
+                        
+                        g.setColor(new Color(79, 79, 79));
                         g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+(j*UNIDADE_DE_MEDIDA+5)-UNIDADE_DE_MEDIDA, i*UNIDADE_DE_MEDIDA+5, UNIDADE_DE_MEDIDA-9, UNIDADE_DE_MEDIDA-10);                        
-                    
+                        //System.out.println(bloco[tabuleiro.tabuleiro[i][j]].cor_P);
+     
                     }
                     System.out.print(tabuleiro.tabuleiro[i][j]+" ");
                 }
@@ -194,9 +197,8 @@ public class TetrisPanel extends JPanel implements ActionListener{
     
     @Override
     public void actionPerformed(ActionEvent e){
-        
+        tabuleiro.atualiza_tabuleiro();
         if(rodando) {
-            tabuleiro.atualiza_tabuleiro();
             if(tabuleiro.insere_bloco(bloco[atual])){
                 
                 atual = proximo;

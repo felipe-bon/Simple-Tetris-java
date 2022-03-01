@@ -23,11 +23,30 @@ public class Board {
         inicioX = 4;       
     }
     
+    // arrumar 
     public int apaga_linha(){
         
-        
-        
-        return 1;
+        int j, i, k = -1;
+        // verifica qual linha está completa
+        for(i = 20; i > 1; i--){
+            for(j = 1; j < 11; j++){
+                if(tabuleiro[i][j] == 0)
+                    break;
+            }
+            if(j == 10 && tabuleiro[i][j] != 0){
+                k = i;
+                break;
+            }
+        }  
+        if(k != -1){
+            for(i = k; i > 1; i--){
+                for(int l = 1; l < 11; l++){
+                    tabuleiro[k][l] = tabuleiro[k-1][l];
+                }
+            }
+            return 1;
+        }
+        return -1;
     }
     
     public void movimenta_bloco(Block bloco, int comando){
@@ -45,9 +64,8 @@ public class Board {
             break;
             
             case 3:
-            if(colisao(bloco, comando)){
+            if(colisao(bloco, comando))
                 inicioX++;
-            }    
             break;
             
             case 4:
@@ -66,6 +84,7 @@ public class Board {
     }
     
     public void atualiza_tabuleiro(){
+        apaga_linha();
         if(inicioY < 20)
             inicioY++;
         else
@@ -93,15 +112,12 @@ public class Board {
             case 3:
             for(int i = bloco.get_Max_T()-1; i >= 0; i--){
                 for(int j = 0; j < bloco.get_Max_T();j++)
-                {
-                    
-                    if( bloco.bloco_formato[i][j] != 0 && tabuleiro[i+inicioY][j+inicioX+2] != 0 || (i== 21)){
-                        int h = i+inicioX+2;
-                        System.out.println(h);
+                {                    
+                    if(bloco.bloco_formato[i][j] != 0 && tabuleiro[i+inicioY][j+inicioX+1] != 0){                
                         return false;
                     }    
                 }
-            }   
+            }               
             return true;
             
             case 4:
