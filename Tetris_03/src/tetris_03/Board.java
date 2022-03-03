@@ -23,7 +23,6 @@ public class Board {
         inicioX = 4;       
     }
     
-    // arrumar 
     public int apaga_linha(){
         
         int i, j, verifica = 0, r = 4, apagadas = 0;
@@ -82,7 +81,7 @@ public class Board {
             break;
             
             case 5:
-            if(colisao(bloco, comando)){
+            if(!colisao(bloco, comando)){
                 inicioY++;
             }   
             break;
@@ -109,24 +108,23 @@ public class Board {
             break;
             
             case 2:
-            for(int j = 0; j < bloco.get_Max_T(); j++){
-                for(int i = 0; i < bloco.get_Max_T(); i++){
-                    if(bloco.bloco_formato[i][j] != 0 && tabuleiro[i+inicioY][j+inicioX] != 0){
+            for(int i = 0; i < bloco.get_Max_T(); i++){
+                for(int j = 0; j < bloco.get_Max_T(); j++){
+                    if(bloco.bloco_formato[i][j] != 0 && tabuleiro[inicioY+i+1][inicioX+j-1] != 0)
                         return false;
-                    }
                 }
             }
             return true;
   
             case 3:
-            for(int i = bloco.get_Max_T()-1; i >= 0; i--){
-                for(int j = 0; j < bloco.get_Max_T();j++)
-                {                    
-                    if(bloco.bloco_formato[i][j] != 0 && tabuleiro[i+inicioY][j+inicioX+1] != 0){                
+            
+            for(int i = 0; i < bloco.get_Max_T(); i++){
+                for(int j = bloco.get_Max_T()-1; j >= 0; j--){
+                    if(bloco.bloco_formato[i][j] != 0 && tabuleiro[inicioY+i+1][inicioX+j+1] != 0)
                         return false;
-                    }    
                 }
-            }               
+            }
+                
             return true;
             
             case 4:
@@ -137,6 +135,16 @@ public class Board {
             bloco.rotaciona(pedaco, 1);
             break;
             
+            case 5:
+            for(int i = bloco.get_Max_T()-1; i >= 0; i--){
+                for(int j = bloco.get_Max_T()-1; j >= 0; j--){
+                    if(bloco.bloco_formato[i][j] != 0 && tabuleiro[i+inicioY+1][j+inicioX] != 0){
+                        return true;
+                    }
+                }
+            }    
+            
+           
         }
         
         

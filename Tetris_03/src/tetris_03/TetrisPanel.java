@@ -21,7 +21,10 @@ public class TetrisPanel extends JPanel implements ActionListener{
     final Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
     final int COMPRIMENTO_TELA = (int)size.getWidth();
     final int ALTURA_TELA = (int)size.getHeight();
+    //int UNIDADE_DE_MEDIDA = ALTURA_TELA/20;
     int UNIDADE_DE_MEDIDA = (ALTURA_TELA-(ALTURA_TELA/12))/22;//unidade de medida resposiva ao tamanho da tela
+    
+    
     int altura_quadro = UNIDADE_DE_MEDIDA*20;
     int largura_quadro = UNIDADE_DE_MEDIDA*10;
 
@@ -35,7 +38,7 @@ public class TetrisPanel extends JPanel implements ActionListener{
     int atual;
     int proximo;
     int contador[];
-    int delay = 150;
+    int delay = 200;
     Timer timer;
     Random r;
     
@@ -52,6 +55,10 @@ public class TetrisPanel extends JPanel implements ActionListener{
         r = new Random();
         atual = r.nextInt(1,8);
         proximo = r.nextInt(1,8);
+        
+        while(proximo == atual)
+            proximo = r.nextInt(1,8);
+        
         tabuleiro = new Board();
         
         contador = new int[8];
@@ -191,7 +198,7 @@ public class TetrisPanel extends JPanel implements ActionListener{
                 }
                 //System.out.print("\n");
             }
-             //System.out.print("\n\n\n");   
+            //System.out.print("\n\n\n");   
         }
         else
             fim_jogo(g);
@@ -203,7 +210,15 @@ public class TetrisPanel extends JPanel implements ActionListener{
         // esse metodo de contar os pontos bonificaa pontuação
         // quando se tem mais de uma linha completada ao mesmo tempo        
         int temp = tabuleiro.apaga_linha();
+        int level_ant = level;
         level = linhas/5;
+        //passou de level
+        if(level_ant != level){
+            delay = 200 - level*2;
+            timer.setDelay(delay);
+            level_ant = level;
+        }
+            
         linhas = temp+linhas;        
         pontos = pontos + 100*temp*temp;
         tabuleiro.atualiza_tabuleiro();
@@ -245,11 +260,38 @@ public class TetrisPanel extends JPanel implements ActionListener{
                 }              
                 contador[atual]++;                               
             }            
-        }                    
+        }  
+        
         repaint();
     }
     
     public void fim_jogo(Graphics g){
+        
+        g.setColor(Color.BLACK);
+        g.fillRect(0,0,COMPRIMENTO_TELA,ALTURA_TELA);
+        
+        for(int i = 0; i < 22; i++){
+            for(int j = 0; j < 12; j++){               
+                g.setColor(Color.DARK_GRAY);
+                g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+(j*UNIDADE_DE_MEDIDA+1)-UNIDADE_DE_MEDIDA, i*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA);    
+
+                g.setColor(Color.LIGHT_GRAY);
+                g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+(j*UNIDADE_DE_MEDIDA+1)-UNIDADE_DE_MEDIDA, i*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA-5, UNIDADE_DE_MEDIDA-5);    
+
+                g.setColor(new Color(79, 79, 79));
+                g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+(j*UNIDADE_DE_MEDIDA+5)-UNIDADE_DE_MEDIDA, i*UNIDADE_DE_MEDIDA+5, UNIDADE_DE_MEDIDA-9, UNIDADE_DE_MEDIDA-10);                        
+            }
+        }
+        FontMetrics metrics = getFontMetrics(g.getFont());
+        g.setColor(Color.WHITE);
+        g.setFont( new Font("Serif", Font.ROMAN_BASELINE, 20));
+        g.drawString("PRESS SPACE TO PLAY AGAIN",COMPRIMENTO_TELA/2- (metrics.stringWidth("PRESS SPACE TO PLAY AGAIN")/2), ALTURA_TELA-3*UNIDADE_DE_MEDIDA);
+        g.setFont( new Font("Serif", Font.ROMAN_BASELINE, 50));
+        g.drawString("SCOORE: "+pontos,COMPRIMENTO_TELA/2- (metrics.stringWidth("SCOORE"+pontos)/2), ALTURA_TELA-4*UNIDADE_DE_MEDIDA);
+        g.drawString("LINES: "+linhas,COMPRIMENTO_TELA/2- (metrics.stringWidth("LINES: "+linhas)/2), ALTURA_TELA-5*UNIDADE_DE_MEDIDA);
+        g.drawString("LEVEL: "+level,COMPRIMENTO_TELA/2- (metrics.stringWidth("LEVEL: "+level)/2), ALTURA_TELA-6*UNIDADE_DE_MEDIDA);               
+        g.setFont( new Font("Serif", Font.ROMAN_BASELINE, 70));
+        g.drawString("GAME OVER",COMPRIMENTO_TELA/2- (metrics.stringWidth("GAME OVER")/2), ALTURA_TELA/2);
         
     }
     
@@ -260,36 +302,39 @@ public class TetrisPanel extends JPanel implements ActionListener{
             switch(e.getKeyCode()){
 
             
-            case KeyEvent.VK_SPACE:
-                tabuleiro.movimenta_bloco(bloco[atual], 1);
+            case KeyEvent.VK_SPACE: 
+                //rodando = false;
+                TetrisFrame tf = new TetrisFrame();
+                //tabuleiro.movimenta_bloco(bloco[atual], 1);
                 
             break;
 
             
             case KeyEvent.VK_LEFT:
-                System.out.println("ESQUERDA");
+                //System.out.println("ESQUERDA");
                 tabuleiro.movimenta_bloco(bloco[atual], 2);
                
             break;
 
             
             case KeyEvent.VK_RIGHT:
-                System.out.println("DIREITA");               
+                //System.out.println("DIREITA");               
                 tabuleiro.movimenta_bloco(bloco[atual],3);
                 
             break; 
 
             
             case KeyEvent.VK_UP:
-                System.out.println("CIMA");                
+                //System.out.println("CIMA");                
                 tabuleiro.movimenta_bloco(bloco[atual], 4);
                 
             break;
 
             
-            case KeyEvent.VK_DOWN:
-                System.out.println("BAIXO");
+            case KeyEvent.VK_DOWN:                                           
+                //System.out.println("BAIXO");               
                 tabuleiro.movimenta_bloco(bloco[atual], 5);
+                rodando = false;
                       
             break;
             }
