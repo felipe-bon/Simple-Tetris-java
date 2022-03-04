@@ -6,7 +6,7 @@ import java.awt.Color;
 public class Block_S extends Block{
     
     Block_S(){        
-        int[][][] n_variacoes ={{{0,5,5},
+        final int[][][] n_variacoes ={{{0,5,5},
                                  {5,5,0},
                                  {0,0,0}},
                                         

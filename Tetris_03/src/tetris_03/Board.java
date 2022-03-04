@@ -3,9 +3,9 @@ package tetris_03;
 
 public class Board {
     
-    int[][] tabuleiro;
-    int inicioY;
-    int inicioX;  
+    private int[][] tabuleiro;
+    private int inicioY;
+    private int inicioX;  
 
     Board(){
         tabuleiro = new int[22][12];
@@ -23,7 +23,7 @@ public class Board {
         inicioX = 4;       
     }
     
-    public int apaga_linha(){
+    protected int apaga_linha(){
         
         int i, j, verifica = 0, r = 4, apagadas = 0;
         int[] linhas = new int[4];
@@ -51,11 +51,9 @@ public class Board {
         
         return apagadas;
             
-    }
-        
+    }        
     
-    
-    public void movimenta_bloco(Block bloco, int comando){
+    protected void movimenta_bloco(Block bloco, int comando){
         
         switch (comando){
             
@@ -81,7 +79,7 @@ public class Board {
             break;
             
             case 5:
-            if(!colisao(bloco, comando)){
+            if(!colisao(bloco, comando) && inicioY+bloco.Max_T < 20){
                 inicioY++;
             }   
             break;
@@ -89,22 +87,36 @@ public class Board {
         
     }
     
-    public void atualiza_tabuleiro(){       
+    protected boolean atualiza_tabuleiro(){       
          
+        for(int i = 1; i < 11; i++)
+            if(tabuleiro[1][i] != 0)
+                return false;
+        
         if(inicioY < 20)
             inicioY++;
         else
             inicioY = 0;
         
+        return true;
 
     }
     
-    public boolean colisao(Block bloco, int direcao){
+    private boolean colisao(Block bloco, int direcao){
        
         switch (direcao){
             
-            case 1:
-                
+            // rotaciona para a esquerda           
+            case 1:  
+            int t_max = bloco.get_Max_T();   
+            int[][] pedaco = new int[t_max][t_max];
+            for(int i = 0; i < bloco.get_Max_T(); i++){
+                for(int j = 0; j < bloco.get_Max_T(); j++){
+                    pedaco [i][j] = tabuleiro[i+inicioY][j+inicioX];
+                }
+            }
+            bloco.rotaciona(pedaco, -1);
+            
             break;
             
             case 2:
@@ -128,41 +140,31 @@ public class Board {
             return true;
             
             case 4:
-            int[][] pedaco = new int[4][4];
-            for(int i = 0; i < 4; i++)
-                for(int j = 0; j < 4; j++)
+            t_max = bloco.get_Max_T();
+            pedaco = new int[t_max][t_max];
+            for(int i = 0; i < t_max; i++){
+                for(int j = 0; j < t_max; j++){
                     pedaco[i][j] = tabuleiro[i+inicioY][j+inicioX];
+                }
+            }
             bloco.rotaciona(pedaco, 1);
             break;
             
             case 5:
             for(int i = bloco.get_Max_T()-1; i >= 0; i--){
-                for(int j = bloco.get_Max_T()-1; j >= 0; j--){
+                for(int j = bloco.get_Max_T()-1; j >= 0; j--){                   
                     if(bloco.bloco_formato[i][j] != 0 && tabuleiro[i+inicioY+1][j+inicioX] != 0){
                         return true;
                     }
                 }
             }    
-            
-           
-        }
-        
-        
-        
-        // testa a colisão para baixo;
-        for(int i = bloco.get_Max_T()-1; i >= 0; i--){
-            for(int j = bloco.get_Max_T()-1; j >= 0; j--){
-                if(bloco.bloco_formato[i][j] != 0 && tabuleiro[i+inicioY+1][j+inicioX] != 0){
-                    return true;
-                }
-            }
-        }
-        
-        return false;   
+            return false;
+        }           
+        return false; 
     }
     
-    public boolean insere_bloco(Block bloco){
-              
+    protected boolean insere_bloco(Block bloco){
+                
         if(colisao(bloco, 5)){
             for(int ib = 0; ib < bloco.get_Max_T(); ib++){
                 for(int jb = 0; jb < bloco.get_Max_T(); jb++){
@@ -184,7 +186,20 @@ public class Board {
 //        }
 //        else
 //            return false;
-    }                  
+    }   
+    
+    public int[][] get_tabuleiro(){
+        return tabuleiro;
+    }
+    
+    public int get_inicioY(){
+        return inicioY;
+    }
+    
+    public int get_inicioX(){
+        return inicioX;
+    }
+    
 }
 
 

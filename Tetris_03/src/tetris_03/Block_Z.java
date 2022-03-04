@@ -7,7 +7,7 @@ import java.awt.Color;
 public class Block_Z extends Block{
     
     Block_Z(){        
-        int[][][] n_variacoes = {{{6,6,0},
+        final int[][][] n_variacoes = {{{6,6,0},
                                   {0,6,6},
                                   {0,0,0}},
                                         

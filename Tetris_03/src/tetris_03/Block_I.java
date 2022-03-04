@@ -6,7 +6,7 @@ import java.awt.Color;
 public class Block_I extends Block{
     
     Block_I(){        
-        int[][][] n_variacoes={{     
+        final int[][][]n_variacoes={{     
                                 { 0,0,1,0},
                                 { 0,0,1,0},
                                 { 0,0,1,0},
@@ -25,9 +25,6 @@ public class Block_I extends Block{
         cor_C = new Color(0, 255, 0);
         cor_P = new Color(0, 200, 0);       
         cor_E = new Color(0, 100, 0);           
-    }
-    
-    // funciona como um get do bloco rotacionado
-    
+    }       
     
 }

@@ -5,12 +5,12 @@ import java.awt.Color;
 
 public abstract class Block {
     
-    int[][] bloco_formato;
-    int[][][] variacoes;
-    int variacao;
+    protected int[][] bloco_formato;
+    protected int[][][] variacoes;
+    protected int variacao;
     protected int MAXvariacoes; 
     protected int Max_T;
-    Color cor_P, cor_E, cor_C;           
+    protected Color cor_P, cor_E, cor_C;           
     
     public void rotaciona(int tabuleiro_pedaco[][], int sentido){
 
