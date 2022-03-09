@@ -58,7 +58,7 @@ public class Board {
         switch (comando){
             
             case 1:
-                
+            colisao(bloco, comando);    
             break;
             
             case 2:
@@ -73,7 +73,7 @@ public class Board {
             break;
             
             case 4:
-            // rotaciona bloco
+            // rotaciona bloco para a direita-> comando = 1
             colisao(bloco, comando);   
             break;
             

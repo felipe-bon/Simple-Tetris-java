@@ -16,7 +16,10 @@ public abstract class Block {
 
         int variacaoAUX;
         
-        if(variacao+sentido<MAXvariacoes)
+        if(variacao+(sentido)<0){
+            variacaoAUX = MAXvariacoes-1;
+        }
+        else if(variacao+(sentido)<MAXvariacoes)
             variacaoAUX = variacao+sentido;      
         else
             variacaoAUX = 0;
@@ -49,6 +52,10 @@ public abstract class Block {
     
     public Color get_Color_C(){
         return cor_C;
+    }
+    
+    public int[][] get_bloco_formato(){
+        return bloco_formato;
     }
     
     
