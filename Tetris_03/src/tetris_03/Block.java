@@ -14,24 +14,25 @@ public abstract class Block {
     
     public void rotaciona(int tabuleiro_pedaco[][], int sentido){
 
-        if(variacao+sentido < MAXvariacoes)
-            variacao = variacao + sentido;      
-        else
-            variacao = 0; 
+        int variacaoAUX;
         
-        bloco_formato = variacoes[variacao];  
-
-//         anda no vetor de rotações de acordo com o sentido recebido (-1 ou 1)        
-//         faz a rotação enquanto verifica
-//         if(rotação deu errado){
-//        
-//            return bloco_formato;
-//        }
-//        else
-//            atualiza a bloco_formato para a rotação atual
-//            return bloco_formato;
-    
-        //return variacoes[sentido];
+        if(variacao+sentido<MAXvariacoes)
+            variacaoAUX = variacao+sentido;      
+        else
+            variacaoAUX = 0;
+        
+        // testa se a proxima rotaçao nao colide com nada no tabuleiro
+        for(int i = 0; i < Max_T; i++){
+            for(int j = 0; j < Max_T; j++){
+                // verifica a colisão
+                if(variacoes[variacaoAUX][i][j] != 0 && tabuleiro_pedaco[i][j] != 0)
+                    return;// retorna e nao muda o bloco formato para outra rotação
+            }
+        }
+        //atualiza variação
+        variacao = variacaoAUX;
+        bloco_formato = variacoes[variacao]; //atualiza o bloco formato para a variação atuaol
+               
     }
     
     public int get_Max_T(){

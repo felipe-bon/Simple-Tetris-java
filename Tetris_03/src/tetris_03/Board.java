@@ -62,20 +62,19 @@ public class Board {
             break;
             
             case 2:
-            if(colisao(bloco, comando)){
+            if(!colisao(bloco, comando)){
                 inicioX--;
             }    
             break;
             
             case 3:
-            if(colisao(bloco, comando))
+            if(!colisao(bloco, comando))
                 inicioX++;
             break;
             
             case 4:
-            if(colisao(bloco, comando)){
-                //rotaciona_bloco();
-            }    
+            // rotaciona bloco
+            colisao(bloco, comando);   
             break;
             
             case 5:
@@ -123,21 +122,21 @@ public class Board {
             for(int i = 0; i < bloco.get_Max_T(); i++){
                 for(int j = 0; j < bloco.get_Max_T(); j++){
                     if(bloco.bloco_formato[i][j] != 0 && tabuleiro[inicioY+i+1][inicioX+j-1] != 0)
-                        return false;
+                        return true;
                 }
             }
-            return true;
+            return false;
   
             case 3:
             
             for(int i = 0; i < bloco.get_Max_T(); i++){
                 for(int j = bloco.get_Max_T()-1; j >= 0; j--){
                     if(bloco.bloco_formato[i][j] != 0 && tabuleiro[inicioY+i+1][inicioX+j+1] != 0)
-                        return false;
+                        return true;
                 }
             }
                 
-            return true;
+            return false;
             
             case 4:
             t_max = bloco.get_Max_T();
@@ -152,12 +151,12 @@ public class Board {
             
             case 5:
             for(int i = bloco.get_Max_T()-1; i >= 0; i--){
-                for(int j = bloco.get_Max_T()-1; j >= 0; j--){                   
+                for(int j = 0; j < bloco.get_Max_T(); j++){                   
                     if(bloco.bloco_formato[i][j] != 0 && tabuleiro[i+inicioY+1][j+inicioX] != 0){
                         return true;
                     }
                 }
-            }    
+            } 
             return false;
         }           
         return false; 
@@ -178,14 +177,6 @@ public class Board {
             return true;        
         }
         return false;  
-
-//        if(inicioY == 16){
-//            inicioY = 0;
-//            inicioX = 4;
-//            return true;
-//        }
-//        else
-//            return false;
     }   
     
     public int[][] get_tabuleiro(){
