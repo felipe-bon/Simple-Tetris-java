@@ -332,7 +332,7 @@ public class TetrisPanel extends JPanel implements ActionListener{
         for(int k = 1; k < 8; k++){
             for(int i = 1; i < miniatura[k].get_Max_T()+1; i++){
                 for(int j = 1; j < miniatura[k].get_Max_T()+1; j++){
-                    if(miniatura[k].bloco_formato[i-1][j-1] != 0){
+                    if(miniatura[k].get_bloco_formato()[i-1][j-1] != 0){
                         g.setColor(miniatura[k].get_Color_E());
                         g.fillRect(COMPRIMENTO_TELA/2-largura_quadro+(j*nUnidade+1)-2*nUnidade, (k-1)*8*nUnidade+i*nUnidade, nUnidade, nUnidade);    
 
@@ -352,7 +352,7 @@ public class TetrisPanel extends JPanel implements ActionListener{
             //desenha o proximo bloco na caixa de proximo bloco
             for(int i = 1; i < bloco[0].get_Max_T()+1; i++){
                 for(int j = 1; j < bloco[0].get_Max_T()+1; j++){
-                    if(bloco[0].bloco_formato[i-1][j-1] != 0){
+                    if(bloco[0].get_bloco_formato()[i-1][j-1] != 0){
                         g.setColor(bloco[0].get_Color_E());
                         g.fillRect(COMPRIMENTO_TELA/2+largura_quadro+(j*nUnidade+1+nUnidade)-3*nUnidade, 5*nUnidade+i*nUnidade, nUnidade, nUnidade);    
 
@@ -374,17 +374,17 @@ public class TetrisPanel extends JPanel implements ActionListener{
             }     
             
             // desenha o bloco atual caindo
-            for(int ib = 0; ib < bloco[atual].Max_T; ib++){
-                for(int jb = 0; jb < bloco[atual].Max_T; jb++){
-                    if(bloco[atual].variacoes[bloco[atual].variacao][ib][jb] != 0){
+            for(int ib = 0; ib < bloco[atual].get_Max_T(); ib++){
+                for(int jb = 0; jb < bloco[atual].get_Max_T(); jb++){
+                    if(bloco[atual].get_bloco_formato()[ib][jb] != 0){
                        
-                        g.setColor(bloco[atual].cor_E);
+                        g.setColor(bloco[atual].get_Color_E());
                         g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+((jb+tabuleiro.get_inicioX())*UNIDADE_DE_MEDIDA+1)-UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA+(ib+tabuleiro.get_inicioY()-1)*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA);    
         
-                        g.setColor(bloco[atual].cor_C);
+                        g.setColor(bloco[atual].get_Color_C());
                         g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+((jb+tabuleiro.get_inicioX())*UNIDADE_DE_MEDIDA+1-UNIDADE_DE_MEDIDA), UNIDADE_DE_MEDIDA+(ib+tabuleiro.get_inicioY()-1)*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA-5, UNIDADE_DE_MEDIDA-5);    
                         
-                        g.setColor(bloco[atual].cor_P);
+                        g.setColor(bloco[atual].get_Color_P());
                         g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+((jb+tabuleiro.get_inicioX())*UNIDADE_DE_MEDIDA+5-UNIDADE_DE_MEDIDA), UNIDADE_DE_MEDIDA+(ib+tabuleiro.get_inicioY()-1)*UNIDADE_DE_MEDIDA+5, UNIDADE_DE_MEDIDA-9, UNIDADE_DE_MEDIDA-10);                                            
                     }            
                 }
@@ -394,13 +394,13 @@ public class TetrisPanel extends JPanel implements ActionListener{
             for(int i = 0; i < 22; i++){
                 for(int j = 0; j < 12; j++){
                     if(tabuleiro.get_tabuleiro()[i][j] > 0){                        
-                        g.setColor(bloco[tabuleiro.get_tabuleiro()[i][j]].cor_E);
+                        g.setColor(bloco[tabuleiro.get_tabuleiro()[i][j]].get_Color_E());
                         g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+(j*UNIDADE_DE_MEDIDA+1)-UNIDADE_DE_MEDIDA, i*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA);    
                         
-                        g.setColor(bloco[tabuleiro.get_tabuleiro()[i][j]].cor_C);
+                        g.setColor(bloco[tabuleiro.get_tabuleiro()[i][j]].get_Color_C());
                         g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+(j*UNIDADE_DE_MEDIDA+1)-UNIDADE_DE_MEDIDA, i*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA-5, UNIDADE_DE_MEDIDA-5);    
                         
-                        g.setColor(bloco[tabuleiro.get_tabuleiro()[i][j]].cor_P);
+                        g.setColor(bloco[tabuleiro.get_tabuleiro()[i][j]].get_Color_P());
                         g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+(j*UNIDADE_DE_MEDIDA+5)-UNIDADE_DE_MEDIDA, i*UNIDADE_DE_MEDIDA+5, UNIDADE_DE_MEDIDA-9, UNIDADE_DE_MEDIDA-10);                        
      
                         

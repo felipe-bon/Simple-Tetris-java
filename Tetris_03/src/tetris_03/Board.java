@@ -109,6 +109,7 @@ public class Board {
             case 1:  
             int t_max = bloco.get_Max_T();   
             int[][] pedaco = new int[t_max][t_max];
+            
             for(int i = 0; i < bloco.get_Max_T(); i++){
                 for(int j = 0; j < bloco.get_Max_T(); j++){
                     pedaco [i][j] = tabuleiro[i+inicioY][j+inicioX];
@@ -121,7 +122,7 @@ public class Board {
             case 2:
             for(int i = 0; i < bloco.get_Max_T(); i++){
                 for(int j = 0; j < bloco.get_Max_T(); j++){
-                    if(bloco.bloco_formato[i][j] != 0 && tabuleiro[inicioY+i+1][inicioX+j-1] != 0)
+                    if(bloco.get_bloco_formato()[i][j] != 0 && tabuleiro[inicioY+i+1][inicioX+j-1] != 0)
                         return true;
                 }
             }
@@ -131,7 +132,7 @@ public class Board {
             
             for(int i = 0; i < bloco.get_Max_T(); i++){
                 for(int j = bloco.get_Max_T()-1; j >= 0; j--){
-                    if(bloco.bloco_formato[i][j] != 0 && tabuleiro[inicioY+i+1][inicioX+j+1] != 0)
+                    if(bloco.get_bloco_formato()[i][j] != 0 && tabuleiro[inicioY+i+1][inicioX+j+1] != 0)
                         return true;
                 }
             }
@@ -152,7 +153,7 @@ public class Board {
             case 5:
             for(int i = bloco.get_Max_T()-1; i >= 0; i--){
                 for(int j = 0; j < bloco.get_Max_T(); j++){                   
-                    if(bloco.bloco_formato[i][j] != 0 && tabuleiro[i+inicioY+1][j+inicioX] != 0){
+                    if(bloco.get_bloco_formato()[i][j] != 0 && tabuleiro[i+inicioY+1][j+inicioX] != 0){
                         return true;
                     }
                 }
@@ -167,8 +168,8 @@ public class Board {
         if(colisao(bloco, 5)){
             for(int ib = 0; ib < bloco.get_Max_T(); ib++){
                 for(int jb = 0; jb < bloco.get_Max_T(); jb++){
-                    if(bloco.variacoes[bloco.variacao][ib][jb] > 0){
-                        tabuleiro[ib+inicioY][jb+inicioX] = bloco.variacoes[bloco.variacao][ib][jb];
+                    if(bloco.get_bloco_formato()[ib][jb] > 0){
+                        tabuleiro[ib+inicioY][jb+inicioX] = bloco.get_bloco_formato()[ib][jb];
                     }
                 }
             }
