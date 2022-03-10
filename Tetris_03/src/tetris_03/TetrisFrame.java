@@ -9,6 +9,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -23,7 +24,9 @@ public class TetrisFrame extends JFrame implements ActionListener{
     JPanel button_panel;
     JLabel mensagem; 
     JLabel inserirNome;
+    JLabel tituloTetris;
     JTextField Nomejogador;
+   
     
     JButton jogar;
     JRadioButton dificil; 
@@ -37,19 +40,18 @@ public class TetrisFrame extends JFrame implements ActionListener{
     TetrisFrame(){ 
         
         dificuldade = 1;
-        
         titulo = new JPanel();
         frame = new JFrame();
         mensagem = new JLabel();
         titulo = new JPanel();
-        jogar = new JButton("jogar");
-        inserirNome = new JLabel("Nome: ");
+        jogar = new JButton("JOGAR");
+        inserirNome = new JLabel("NOME: ");
         Nomejogador = new JTextField();
-        dificil = new JRadioButton("dificil");
+        dificil = new JRadioButton("DIFÍCIL");
         dificil.addActionListener(this);
-        medio = new JRadioButton("medio");
+        medio = new JRadioButton("MÉDIO");
         medio.addActionListener(this);
-        facil = new JRadioButton("facil");
+        facil = new JRadioButton("FÁCIL");
         facil.addActionListener(this);
         
         
@@ -72,9 +74,13 @@ public class TetrisFrame extends JFrame implements ActionListener{
         
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);        
         frame.setSize(800, 800);
-        frame.getContentPane().setBackground(Color.BLACK);
+        
+        frame.getContentPane().setBackground(Color.YELLOW);
+        
+        frame.setLocationRelativeTo(null);
         frame.setLayout(null);       
         frame.setVisible(true);
+        
         
         mensagem.setBackground(Color.BLACK);
         mensagem.setForeground(Color.WHITE);
@@ -94,6 +100,8 @@ public class TetrisFrame extends JFrame implements ActionListener{
         frame.add(inserirNome);
         frame.add(Nomejogador);
         frame.add(jogar);   
+        
+        
         
     }   
 
@@ -119,7 +127,7 @@ public class TetrisFrame extends JFrame implements ActionListener{
             this.add(tp); 
             this.setTitle("Tetris");
             this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            this.setResizable(false);
+            this.setResizable(true);
             this.pack();
             this.setVisible(true);
             this.setLocationRelativeTo(null);  
