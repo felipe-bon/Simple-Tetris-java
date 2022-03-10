@@ -8,12 +8,12 @@ public class Block_Z extends Block{
     
     Block_Z(){        
         final int[][][] n_variacoes = {{{6,6,0},
-                                  {0,6,6},
-                                  {0,0,0}},
+                                        {0,6,6},
+                                        {0,0,0}},
                                         
-                                 {{0,6,0},
-                                  {6,6,0},
-                                  {6,0,0}}};
+                                        {{0,6,0},
+                                         {6,6,0},
+                                         {6,0,0}}};
         
         this.variacoes = n_variacoes;
     

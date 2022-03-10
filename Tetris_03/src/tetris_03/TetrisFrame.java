@@ -4,6 +4,7 @@ package tetris_03;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,7 +18,7 @@ import javax.swing.JTextField;
 
 public class TetrisFrame extends JFrame implements ActionListener{
     
-    JFrame frame;
+    private final JFrame frame;
     JPanel titulo;
     JPanel button_panel;
     JLabel mensagem; 
@@ -112,18 +113,18 @@ public class TetrisFrame extends JFrame implements ActionListener{
         }
         
         if(e.getSource() == jogar){
-            
-            this.nome = Nomejogador.getText();
-            
-            this.add(new TetrisPanel(this.dificuldade, this.nome)); 
+                       
+            this.nome = Nomejogador.getText();                  
+            TetrisPanel tp= new TetrisPanel(this, this.dificuldade, this.nome);            
+            this.add(tp); 
             this.setTitle("Tetris");
             this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             this.setResizable(false);
             this.pack();
             this.setVisible(true);
-            this.setLocationRelativeTo(null);
-        }
-        
-    }
-       
+            this.setLocationRelativeTo(null);  
+            frame.setVisible(false);         
+            
+        }       
+    }      
 }

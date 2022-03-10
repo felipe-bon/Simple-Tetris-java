@@ -9,8 +9,8 @@ public class Block_T extends Block{
     
     Block_T(){        
         final int[][][] n_variacoes={{{0,2,0},
-                                {2,2,2},
-                                {0,0,0}},
+                                      {2,2,2},
+                                      {0,0,0}},
                                         
                                {{0,2,0},
                                 {2,2,0},
