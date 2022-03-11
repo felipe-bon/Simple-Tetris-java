@@ -3,10 +3,15 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD:Tetris_03/nbproject/private/private.xml
             <file>file:/home/adalberto/github/Simple-Tetris-java-bak/Tetris_03/src/tetris_03/TetrisFrameModificado.java</file>
             <file>file:/home/adalberto/github/Simple-Tetris-java-bak/Tetris_03/src/tetris_03/Tetris.java</file>
             <file>file:/home/adalberto/github/Simple-Tetris-java-bak/Tetris_03/src/tetris_03/TetrisFrame.java</file>
             <file>file:/home/adalberto/github/Simple-Tetris-java-bak/Tetris_03/src/tetris_03/TetrisPanel.java</file>
+=======
+            <file>file:/home/adalberto/github/Simple-Tetris-java/Tetris_03/src/tetris_03/Tetris.java</file>
+            <file>file:/home/adalberto/github/Simple-Tetris-java/Tetris_03/src/tetris_03/TetrisFrame.java</file>
+>>>>>>> 45e3d2d187b90dcbcbcdfa8d2bb69145e9c3b482:nbproject/private/private.xml
         </group>
     </open-files>
 </project-private>

@@ -7,6 +7,7 @@ import java.awt.Color;
 public class Tetris {
     
     public static void main(String a[]){
+<<<<<<< HEAD
     // TetrisFrame tf;
      //tf = new TetrisFrame();
      TetrisFrameModificado tf;
@@ -17,6 +18,12 @@ public class Tetris {
    
     
      
+=======
+     TetrisFrame tf;
+     tf = new TetrisFrame();
+     //TetrisFrameModificado tf;
+     //tf = new TetrisFrameModificado();
+>>>>>>> 45e3d2d187b90dcbcbcdfa8d2bb69145e9c3b482
        
                
     }

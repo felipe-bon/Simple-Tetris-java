@@ -31,23 +31,14 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
-<<<<<<< HEAD
-              <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
-              <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
-              <Component id="jLabel1" pref="436" max="32767" attributes="0"/>
-=======
               <EmptySpace min="-2" pref="128" max="-2" attributes="0"/>
               <Component id="jLabel1" pref="407" max="32767" attributes="0"/>
->>>>>>> 45e3d2d187b90dcbcbcdfa8d2bb69145e9c3b482
               <EmptySpace min="-2" pref="81" max="-2" attributes="0"/>
           </Group>
           <Group type="102" attributes="0">
               <EmptySpace max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Group type="102" attributes="0">
-<<<<<<< HEAD
-=======
                       <Component id="RadioButtonFacil" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                       <Component id="RadioButtonMedio" min="-2" max="-2" attributes="0"/>
@@ -55,28 +46,10 @@
                       <Component id="RadioButtonDificil" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" attributes="0">
->>>>>>> 45e3d2d187b90dcbcbcdfa8d2bb69145e9c3b482
                       <Component id="jLabelNome" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="50" max="-2" attributes="0"/>
                       <Component id="nomeJogador" min="-2" pref="351" max="-2" attributes="0"/>
                   </Group>
-<<<<<<< HEAD
-                  <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="jButton1Jogar" min="-2" max="-2" attributes="0"/>
-                          <Group type="102" attributes="0">
-                              <Component id="RadioButtonFacil" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="32767" attributes="0"/>
-                              <Component id="RadioButtonMedio" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                      </Group>
-                      <EmptySpace max="32767" attributes="0"/>
-                      <Component id="RadioButtonDificil" min="-2" max="-2" attributes="0"/>
-                  </Group>
-              </Group>
-              <EmptySpace max="32767" attributes="0"/>
-          </Group>
-=======
               </Group>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
@@ -85,27 +58,13 @@
               <Component id="jButton1Jogar" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
->>>>>>> 45e3d2d187b90dcbcbcdfa8d2bb69145e9c3b482
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-<<<<<<< HEAD
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
-                      <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="50" max="-2" attributes="0"/>
-                      <Component id="jLabel2" min="-2" pref="0" max="-2" attributes="0"/>
-                  </Group>
-              </Group>
-=======
               <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
->>>>>>> 45e3d2d187b90dcbcbcdfa8d2bb69145e9c3b482
               <EmptySpace type="separate" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabelNome" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -117,15 +76,9 @@
                   <Component id="RadioButtonMedio" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="RadioButtonDificil" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-<<<<<<< HEAD
-              <EmptySpace min="-2" pref="47" max="-2" attributes="0"/>
-              <Component id="jButton1Jogar" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="61" max="32767" attributes="0"/>
-=======
               <EmptySpace pref="49" max="32767" attributes="0"/>
               <Component id="jButton1Jogar" min="-2" max="-2" attributes="0"/>
               <EmptySpace pref="59" max="32767" attributes="0"/>
->>>>>>> 45e3d2d187b90dcbcbcdfa8d2bb69145e9c3b482
           </Group>
       </Group>
     </DimensionLayout>
@@ -195,13 +148,5 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1JogarActionPerformed"/>
       </Events>
     </Component>
-<<<<<<< HEAD
-    <Component class="javax.swing.JLabel" name="jLabel2">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="jLabel2"/>
-      </Properties>
-    </Component>
-=======
->>>>>>> 45e3d2d187b90dcbcbcdfa8d2bb69145e9c3b482
   </SubComponents>
 </Form>
