@@ -16,11 +16,7 @@ public class Player {
         this.nome = nome;
         this.pontuacao = pontuacao;
     }
-    
-    public Player get_jogador(){
-        return this;
-    }
-    
+
     public int get_pontos(){
         return this.pontuacao;
     }

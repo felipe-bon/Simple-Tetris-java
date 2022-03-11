@@ -115,7 +115,7 @@ public class TetrisFrame extends JFrame implements ActionListener{
         if(e.getSource() == jogar){
                        
             this.nome = Nomejogador.getText();                  
-            TetrisPanel tp= new TetrisPanel(this, this.dificuldade, this.nome);            
+            TetrisPanel tp= new TetrisPanel(this, 3, true, true, this.dificuldade, this.nome);            
             this.add(tp); 
             this.setTitle("Tetris");
             this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -1,6 +1,4 @@
-
 package tetris_03;
-
 
 public class Tetris {
     

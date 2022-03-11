@@ -5,24 +5,19 @@ import java.awt.Color;
 
 public class Block_S extends Block{
     
-    Block_S(){        
-        final int[][][] n_variacoes ={{{0,5,5},
-                                 {5,5,0},
-                                 {0,0,0}},
+    Block_S(){  
+        
+        super(0,2,3,5, new Color(0, 204, 204), new Color(6, 146, 146), new Color(0, 255, 255));
+        
+        final int[][][] S_variacoes ={{{0,5,5},
+                                       {5,5,0},
+                                       {0,0,0}},
                                         
-                                {{5,0,0},
-                                 {5,5,0},
-                                 {0,5,0}}};
+                                      {{5,0,0},
+                                       {5,5,0},
+                                       {0,5,0}}};
         
-        this.variacoes = n_variacoes;
-    
-        bloco_formato = variacoes[0];
-        variacao = 0;
-        MAXvariacoes = 2;
-        Max_T = 3;
-        
-        cor_C = new Color(0, 255, 255);
-        cor_P = new Color(0, 204, 204);       
-        cor_E = new Color(6, 146, 146);                 
+        super.set_variacoes(S_variacoes);
+        super.set_bloco_formato(S_variacoes[0]);
     }
 }

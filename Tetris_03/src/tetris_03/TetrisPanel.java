@@ -18,37 +18,37 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-
 public class TetrisPanel extends JPanel implements ActionListener{
     
-    final Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
-    final int COMPRIMENTO_TELA = (int)size.getWidth();
-    final int ALTURA_TELA = (int)size.getHeight();    
-    private final int UNIDADE_DE_MEDIDA = (ALTURA_TELA-(ALTURA_TELA/12))/22;//unidade de medida resposiva ao tamanho da tela
-    
-    
-    private final int altura_quadro = UNIDADE_DE_MEDIDA*20;
-    private final int largura_quadro = UNIDADE_DE_MEDIDA*10;
+    private final Dimension SIZE;
+    private final int COMPRIMENTO_TELA;
+    private final int ALTURA_TELA;    
+    private final int UNIDADE_DE_MEDIDA;//unidade de medida resposiva ao tamanho da tela    
+    private final int ALTURA_QUADRO;
+    private final int LARGURA_QUADRO;
 
     private int pontos;
     private int linhas;
     private int level = 1;
+    private int conta_bloco;
     private final Board tabuleiro;
     private final Block bloco[]; 
     private final Block miniatura[];
     private final String nome;
     private Player jogador;
     private ArrayList<Player> recordes;
+    private HashMap<Block,Integer> contador;
     private boolean rodando = false;
+    private boolean modo_segas, modo_petrifica;
     private int atual;
     private int proximo;
-    private final int contador[];
     private final int inicial_delay;
     private int delay;
     private Timer timer;
@@ -56,45 +56,56 @@ public class TetrisPanel extends JPanel implements ActionListener{
     JFrame fr;
     private final JButton novo_jogo;    
         
-    TetrisPanel(JFrame fr, int dificuldade, String Nome){
+    TetrisPanel(JFrame frame, int opcao, boolean segas, boolean petrifica, int dificuldade, String Nome){
         
-        this.setPreferredSize(size);        
+        switch (opcao){
+            
+            case 1:
+            this.tabuleiro = new Board();// padrão
+            
+            break;
+            
+            case 2:
+            this.tabuleiro = new Board(10,15);// reduzido
+            
+            break;
+            
+            case 3:
+            this.tabuleiro = new Board(15,15);// quadrado    
+            break;
+            
+            default:
+            this.tabuleiro = new Board();// padrão   
+        }
+        
+        this.SIZE = Toolkit.getDefaultToolkit().getScreenSize();
+        this.COMPRIMENTO_TELA  = (int)SIZE.getWidth();
+        this.ALTURA_TELA = (int)SIZE.getHeight();
+        this.UNIDADE_DE_MEDIDA = (ALTURA_TELA-(ALTURA_TELA/(tabuleiro.get_largura()+2)))/(tabuleiro.get_altura()+2);
+        this.ALTURA_QUADRO = UNIDADE_DE_MEDIDA*tabuleiro.get_altura();
+        this.LARGURA_QUADRO = UNIDADE_DE_MEDIDA*tabuleiro.get_largura();       
+        this.setPreferredSize(SIZE);        
         this.setBackground(Color.BLACK);
         this.setFocusable(true);
-        this.addKeyListener(new adaptador_tecla());      
-        
-        this.fr = fr;
-        this.nome = Nome;
-        
-        inicial_delay = 200 - dificuldade*2;
+        this.addKeyListener(new adaptador_tecla());   
+        this.modo_segas = segas;
+        this.modo_petrifica = petrifica;
+        this.fr = frame;
+        this.nome = Nome;        
+        this.inicial_delay = 200 - dificuldade*2;
         this.level = dificuldade;
         this.pontos = 0;
-        this.linhas = 0;
-        
-        novo_jogo = new JButton("NOVO JOGO");
-                          
-        
-        novo_jogo.addActionListener(this);
+        this.linhas = 0; 
+        this.conta_bloco = 0;
+        this.novo_jogo = new JButton("NOVO JOGO");
+        this.novo_jogo.addActionListener(this);
         this.add(novo_jogo);
-        novo_jogo.setVisible(false);
-  
-        
-        r = new Random();
-        
-        atual = r.nextInt(7)+1;
-        proximo = r.nextInt(7)+1;
-           
-        while(proximo == atual)
-            proximo = r.nextInt(7)+1;
-
-        tabuleiro = new Board();
- 
-        contador = new int[8];
-        for(int i = 1; i < 8; i++)  
-            contador[i] = 0;
-        contador[atual]++;
-        
-        bloco = new Block[8];
+        this.novo_jogo.setVisible(false);   
+        this.r = new Random();
+        this.atual = r.nextInt(7)+1;
+        this.proximo = r.nextInt(7)+1;                 
+        this.contador = new HashMap();
+        this.bloco = new Block[8];
         
         bloco[1] = new Block_I();
         bloco[2] = new Block_T();
@@ -168,12 +179,7 @@ public class TetrisPanel extends JPanel implements ActionListener{
         
         }catch(java.io.IOException e){
             System.out.println("File error"+ e.toString());
-        }
-        
-//        for(i = 0; i < recordes.size(); i++){
-//            jogador = recordes.get(i);               
-//        }
-        
+        }     
     }   
     
     @Override
@@ -186,16 +192,25 @@ public class TetrisPanel extends JPanel implements ActionListener{
         level = linhas/5;
         //passou de level
         if(level_ant != level){
+            this.setBackground(new Color(r.nextInt(50),r.nextInt(50),r.nextInt(50)));
             delay = inicial_delay - level*2;
             timer.setDelay(delay);
+            if(modo_petrifica)
+                tabuleiro.despetrifica();
         }
-            
         linhas = temp+linhas;        
         pontos = pontos + 100*temp*temp;// bonificação  
         
         if(rodando){
             if(tabuleiro.insere_bloco(bloco[atual])){
-     
+                
+            if(modo_petrifica){
+                conta_bloco++;
+                if(conta_bloco == tabuleiro.get_largura()/2){
+                    tabuleiro.petrifica();
+                    conta_bloco = 0;
+                }
+            }
                 atual = proximo;               
                 proximo = r.nextInt(7)+1;
                 
@@ -232,7 +247,7 @@ public class TetrisPanel extends JPanel implements ActionListener{
                    
                     
                 }
-                contador[atual]++;
+                //contador[atual]++;o contador novo vai vir aqui
                 // da new no bloco que caíra em seguida do atual
                 switch (proximo){
                     
@@ -272,12 +287,13 @@ public class TetrisPanel extends JPanel implements ActionListener{
             novo_jogo.setVisible(!rodando);
             if(e.getSource() == novo_jogo){  
                 fr.setVisible(false);
-                fr = new TetrisFrame();
+                fr = new TetrisFrameModificado();
             }
         }
         if(!tabuleiro.atualiza_tabuleiro()){
             rodando = false;           
-        }   
+        } 
+             
         repaint();       
     }
     
@@ -285,44 +301,46 @@ public class TetrisPanel extends JPanel implements ActionListener{
         
         // escreve as informações na tela
         g.setColor(Color.LIGHT_GRAY);
-        g.setFont( new Font("Asai Analogue", Font.BOLD, 40));
+        g.setFont( new Font("Asai Analogue", Font.BOLD, 2*UNIDADE_DE_MEDIDA));
         FontMetrics metrics = getFontMetrics(g.getFont());
-        g.drawString("NEXT: ",COMPRIMENTO_TELA/2+largura_quadro, UNIDADE_DE_MEDIDA);
-        g.drawString("SCORE: "+pontos,COMPRIMENTO_TELA/3-(metrics.stringWidth("SCORE"+pontos)/2)-5*UNIDADE_DE_MEDIDA, ALTURA_TELA-2*UNIDADE_DE_MEDIDA);
-        g.drawString("LINES: "+linhas,COMPRIMENTO_TELA/3-(metrics.stringWidth("LINES: "+linhas)/2)-5*UNIDADE_DE_MEDIDA, ALTURA_TELA-3*UNIDADE_DE_MEDIDA);
-        g.drawString("LEVEL: "+level,COMPRIMENTO_TELA/3-(metrics.stringWidth("LEVEL: "+level)/2)-5*UNIDADE_DE_MEDIDA, ALTURA_TELA-4*UNIDADE_DE_MEDIDA);
+        if(!modo_segas)
+            g.drawString("NEXT: ",COMPRIMENTO_TELA/2+LARGURA_QUADRO, UNIDADE_DE_MEDIDA);
+        g.drawString("SCORE:"+pontos,COMPRIMENTO_TELA-(metrics.stringWidth("SCORE"+pontos)/3)-6*UNIDADE_DE_MEDIDA, ALTURA_TELA-4*UNIDADE_DE_MEDIDA);
+        g.drawString("LINES:"+linhas,COMPRIMENTO_TELA-(metrics.stringWidth("LINES:"+linhas)/3)-6*UNIDADE_DE_MEDIDA, ALTURA_TELA-6*UNIDADE_DE_MEDIDA);
+        g.drawString(" LEVEL:"+level,COMPRIMENTO_TELA-(metrics.stringWidth("LEVEL:"+level)/3)-6*UNIDADE_DE_MEDIDA, ALTURA_TELA-8*UNIDADE_DE_MEDIDA);
         
-        int nUnidade = UNIDADE_DE_MEDIDA/3;//nova unidade de medida para desenhar as miniaturas dos blocos;
+        int nUnidade = (ALTURA_TELA-(ALTURA_TELA/(tabuleiro.get_largura()+2)))/(52);;//nova unidade de medida para desenhar as miniaturas dos blocos;
 
-        // desenha a caixa de proximo bloco        
-        for(int i = 0; i < 7; i++){
-            for(int j = 0; j < 7; j++){
-                if(i == 0 || i == 6 || j == 0 || j == 6){
-                    g.setColor(Color.DARK_GRAY);
-                    g.fillRect(COMPRIMENTO_TELA/2+largura_quadro+(j*nUnidade+1)-3*nUnidade, 4*nUnidade+i*nUnidade, nUnidade, nUnidade);    
+        // desenha a caixa de proximo bloco  
+        if(!modo_segas){
+            for(int i = 0; i < 7; i++){
+                for(int j = 0; j < 7; j++){
+                    if(i == 0 || i == 6 || j == 0 || j == 6){
+                        g.setColor(Color.DARK_GRAY);
+                        g.fillRect(COMPRIMENTO_TELA/2+LARGURA_QUADRO+(j*nUnidade+1)-3*nUnidade, 4*nUnidade+i*nUnidade, nUnidade, nUnidade);    
 
-                    g.setColor(Color.LIGHT_GRAY);
-                    g.fillRect(COMPRIMENTO_TELA/2+largura_quadro+(j*nUnidade+1)-3*nUnidade, 4*nUnidade+i*nUnidade, nUnidade-5, nUnidade-5);    
+                        g.setColor(Color.LIGHT_GRAY);
+                        g.fillRect(COMPRIMENTO_TELA/2+LARGURA_QUADRO+(j*nUnidade+1)-3*nUnidade, 4*nUnidade+i*nUnidade, nUnidade-5, nUnidade-5);    
 
-                    g.setColor(new Color(79,79,79));
-                    g.fillRect(COMPRIMENTO_TELA/2+largura_quadro+(j*nUnidade+5)-3*nUnidade, 4*nUnidade+i*nUnidade+5, nUnidade-9, nUnidade-10);                                 
+                        g.setColor(new Color(79,79,79));
+                        g.fillRect(COMPRIMENTO_TELA/2+LARGURA_QUADRO+(j*nUnidade+5)-3*nUnidade, 4*nUnidade+i*nUnidade+5, nUnidade-9, nUnidade-10);                                 
+                    }
                 }
             }
         }
-        
         // desenha as caixas de cada tipo de bloco   
         for(int k = 0; k < 7; k++){
             for(int i = 0; i < 6; i++){
                 for(int j = 0; j < 7; j++){
                     if(i == 0 || i == 5 || j == 0 || j == 6){
                         g.setColor(Color.DARK_GRAY);
-                        g.fillRect(COMPRIMENTO_TELA/2-largura_quadro+(j*nUnidade+1)-3*nUnidade, k*8*nUnidade+i*nUnidade, nUnidade, nUnidade);    
+                        g.fillRect(COMPRIMENTO_TELA/3-LARGURA_QUADRO/2+(j*nUnidade+1)-3*nUnidade, k*8*nUnidade+i*nUnidade, nUnidade, nUnidade);    
 
                         g.setColor(Color.LIGHT_GRAY);
-                        g.fillRect(COMPRIMENTO_TELA/2-largura_quadro+(j*nUnidade+1)-3*nUnidade, k*8*nUnidade+i*nUnidade, nUnidade-5, nUnidade-5);    
+                        g.fillRect(COMPRIMENTO_TELA/3-LARGURA_QUADRO/2+(j*nUnidade+1)-3*nUnidade, k*8*nUnidade+i*nUnidade, nUnidade-5, nUnidade-5);    
 
                         g.setColor(new Color(79,79,79));
-                        g.fillRect(COMPRIMENTO_TELA/2-largura_quadro+(j*nUnidade+5)-3*nUnidade, k*8*nUnidade+i*nUnidade+5, nUnidade-9, nUnidade-10);                                 
+                        g.fillRect(COMPRIMENTO_TELA/3-LARGURA_QUADRO/2+(j*nUnidade+5)-3*nUnidade, k*8*nUnidade+i*nUnidade+5, nUnidade-9, nUnidade-10);                                 
                     }
                 }
             }            
@@ -330,91 +348,92 @@ public class TetrisPanel extends JPanel implements ActionListener{
         
         //desenha as miniaturas de cada bloco para fazer a contagem
         for(int k = 1; k < 8; k++){
-            for(int i = 1; i < miniatura[k].get_Max_T()+1; i++){
-                for(int j = 1; j < miniatura[k].get_Max_T()+1; j++){
+            for(int i = 1; i < miniatura[k].get_max_tamanho()+1; i++){
+                for(int j = 1; j < miniatura[k].get_max_tamanho()+1; j++){
                     if(miniatura[k].get_bloco_formato()[i-1][j-1] != 0){
-                        g.setColor(miniatura[k].get_Color_E());
-                        g.fillRect(COMPRIMENTO_TELA/2-largura_quadro+(j*nUnidade+1)-2*nUnidade, (k-1)*8*nUnidade+i*nUnidade, nUnidade, nUnidade);    
+                        g.setColor(miniatura[k].get_cor_escura());
+                        g.fillRect(COMPRIMENTO_TELA/3-LARGURA_QUADRO/2+(j*nUnidade+1)-2*nUnidade, (k-1)*8*nUnidade+i*nUnidade, nUnidade, nUnidade);    
 
-                        g.setColor(miniatura[k].get_Color_C());
-                        g.fillRect(COMPRIMENTO_TELA/2-largura_quadro+(j*nUnidade+1)-2*nUnidade, (k-1)*8*nUnidade+i*nUnidade, nUnidade-5, nUnidade-5);    
+                        g.setColor(miniatura[k].get_cor_clara());
+                        g.fillRect(COMPRIMENTO_TELA/3-LARGURA_QUADRO/2+(j*nUnidade+1)-2*nUnidade, (k-1)*8*nUnidade+i*nUnidade, nUnidade-5, nUnidade-5);    
                         
-                        g.setColor(miniatura[k].get_Color_P());
-                        g.fillRect(COMPRIMENTO_TELA/2-largura_quadro+(j*nUnidade+1)-2*nUnidade, (k-1)*8*nUnidade+i*nUnidade+5, nUnidade-9, nUnidade-10);                                 
+                        g.setColor(miniatura[k].get_cor_principal());
+                        g.fillRect(COMPRIMENTO_TELA/3-LARGURA_QUADRO/2+(j*nUnidade+5)-2*nUnidade, (k-1)*8*nUnidade+i*nUnidade+5, nUnidade-9, nUnidade-10);                                 
                     }  
                 }
             }
-            g.drawString(""+contador[k],COMPRIMENTO_TELA/2-largura_quadro, k*8*nUnidade);
+            //g.drawString(""+contador[k],COMPRIMENTO_TELA/2-largura_quadro, k*8*nUnidade); escreve a quantidade de cada bloco
         }
         
         if(rodando){ 
             
-            //desenha o proximo bloco na caixa de proximo bloco
-            for(int i = 1; i < bloco[0].get_Max_T()+1; i++){
-                for(int j = 1; j < bloco[0].get_Max_T()+1; j++){
-                    if(bloco[0].get_bloco_formato()[i-1][j-1] != 0){
-                        g.setColor(bloco[0].get_Color_E());
-                        g.fillRect(COMPRIMENTO_TELA/2+largura_quadro+(j*nUnidade+1+nUnidade)-3*nUnidade, 5*nUnidade+i*nUnidade, nUnidade, nUnidade);    
+            if(!modo_segas){
+                //desenha o proximo bloco na caixa de proximo bloco
+                for(int i = 1; i < bloco[0].get_max_tamanho()+1; i++){
+                    for(int j = 1; j < bloco[0].get_max_tamanho()+1; j++){
+                        if(bloco[0].get_bloco_formato()[i-1][j-1] != 0){
+                            g.setColor(bloco[0].get_cor_escura());
+                            g.fillRect(COMPRIMENTO_TELA/2+LARGURA_QUADRO+(j*nUnidade+1+nUnidade)-3*nUnidade, 5*nUnidade+i*nUnidade, nUnidade, nUnidade);    
 
-                        g.setColor(bloco[0].get_Color_C());
-                        g.fillRect(COMPRIMENTO_TELA/2+largura_quadro+(j*nUnidade+1+nUnidade)-3*nUnidade, 5*nUnidade+i*nUnidade, nUnidade-5, nUnidade-5);    
-                        
-                        g.setColor(bloco[0].get_Color_P());
-                        g.fillRect(COMPRIMENTO_TELA/2+largura_quadro+(j*nUnidade+5+nUnidade)-3*nUnidade, 5*nUnidade+i*nUnidade+5, nUnidade-9, nUnidade-10);                                 
+                            g.setColor(bloco[0].get_cor_clara());
+                            g.fillRect(COMPRIMENTO_TELA/2+LARGURA_QUADRO+(j*nUnidade+1+nUnidade)-3*nUnidade, 5*nUnidade+i*nUnidade, nUnidade-5, nUnidade-5);    
+
+                            g.setColor(bloco[0].get_cor_principal());
+                            g.fillRect(COMPRIMENTO_TELA/2+LARGURA_QUADRO+(j*nUnidade+5+nUnidade)-3*nUnidade, 5*nUnidade+i*nUnidade+5, nUnidade-9, nUnidade-10);                                 
+                        }
                     }
-                }
-            }    
-            
+                }    
+            }
             // desenha a malha quadriculada do fundo
             g.setColor(Color.darkGray);
-            for(int i = 0; i <= 22; i++){
-                if(i <= 10)
-                    g.drawLine(COMPRIMENTO_TELA/2-largura_quadro/2+i*UNIDADE_DE_MEDIDA,UNIDADE_DE_MEDIDA , COMPRIMENTO_TELA/2+i*UNIDADE_DE_MEDIDA-largura_quadro/2, altura_quadro+UNIDADE_DE_MEDIDA);
-                g.drawLine(COMPRIMENTO_TELA/2+largura_quadro/2, i*UNIDADE_DE_MEDIDA, COMPRIMENTO_TELA/2-largura_quadro/2, i*UNIDADE_DE_MEDIDA);   
+            for(int i = 0; i <= tabuleiro.get_altura(); i++){
+                if(i <= tabuleiro.get_largura())
+                    g.drawLine(COMPRIMENTO_TELA/2-LARGURA_QUADRO/2+i*UNIDADE_DE_MEDIDA,UNIDADE_DE_MEDIDA , COMPRIMENTO_TELA/2+i*UNIDADE_DE_MEDIDA-LARGURA_QUADRO/2, ALTURA_QUADRO+UNIDADE_DE_MEDIDA);
+                g.drawLine(COMPRIMENTO_TELA/2+LARGURA_QUADRO/2, i*UNIDADE_DE_MEDIDA, COMPRIMENTO_TELA/2-LARGURA_QUADRO/2, i*UNIDADE_DE_MEDIDA);   
             }     
             
             // desenha o bloco atual caindo
-            for(int ib = 0; ib < bloco[atual].get_Max_T(); ib++){
-                for(int jb = 0; jb < bloco[atual].get_Max_T(); jb++){
+            for(int ib = 0; ib < bloco[atual].get_max_tamanho(); ib++){
+                for(int jb = 0; jb < bloco[atual].get_max_tamanho(); jb++){
                     if(bloco[atual].get_bloco_formato()[ib][jb] != 0){
                        
-                        g.setColor(bloco[atual].get_Color_E());
-                        g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+((jb+tabuleiro.get_inicioX())*UNIDADE_DE_MEDIDA+1)-UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA+(ib+tabuleiro.get_inicioY()-1)*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA);    
+                        g.setColor(bloco[atual].get_cor_escura());
+                        g.fillRect(COMPRIMENTO_TELA/2-LARGURA_QUADRO/2+((jb+tabuleiro.get_inicioX())*UNIDADE_DE_MEDIDA+1)-UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA+(ib+tabuleiro.get_inicioY()-1)*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA);    
         
-                        g.setColor(bloco[atual].get_Color_C());
-                        g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+((jb+tabuleiro.get_inicioX())*UNIDADE_DE_MEDIDA+1-UNIDADE_DE_MEDIDA), UNIDADE_DE_MEDIDA+(ib+tabuleiro.get_inicioY()-1)*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA-5, UNIDADE_DE_MEDIDA-5);    
+                        g.setColor(bloco[atual].get_cor_clara());
+                        g.fillRect(COMPRIMENTO_TELA/2-LARGURA_QUADRO/2+((jb+tabuleiro.get_inicioX())*UNIDADE_DE_MEDIDA+1-UNIDADE_DE_MEDIDA), UNIDADE_DE_MEDIDA+(ib+tabuleiro.get_inicioY()-1)*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA-5, UNIDADE_DE_MEDIDA-5);    
                         
-                        g.setColor(bloco[atual].get_Color_P());
-                        g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+((jb+tabuleiro.get_inicioX())*UNIDADE_DE_MEDIDA+5-UNIDADE_DE_MEDIDA), UNIDADE_DE_MEDIDA+(ib+tabuleiro.get_inicioY()-1)*UNIDADE_DE_MEDIDA+5, UNIDADE_DE_MEDIDA-9, UNIDADE_DE_MEDIDA-10);                                            
+                        g.setColor(bloco[atual].get_cor_principal());
+                        g.fillRect(COMPRIMENTO_TELA/2-LARGURA_QUADRO/2+((jb+tabuleiro.get_inicioX())*UNIDADE_DE_MEDIDA+5-UNIDADE_DE_MEDIDA), UNIDADE_DE_MEDIDA+(ib+tabuleiro.get_inicioY()-1)*UNIDADE_DE_MEDIDA+5, UNIDADE_DE_MEDIDA-9, UNIDADE_DE_MEDIDA-10);                                            
                     }            
                 }
             }
             
             // ver se ta POO correto
             // desenha o tabuleiro com as peças em que estão inseridas nele 
-            for(int i = 0; i < 22; i++){
-                for(int j = 0; j < 12; j++){
+            for(int i = 0; i < tabuleiro.get_altura()+2; i++){
+                for(int j = 0; j < tabuleiro.get_largura()+2; j++){
                     if(tabuleiro.get_tabuleiro()[i][j] > 0){                        
-                        g.setColor(bloco[tabuleiro.get_tabuleiro()[i][j]].get_Color_E());
-                        g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+(j*UNIDADE_DE_MEDIDA+1)-UNIDADE_DE_MEDIDA, i*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA);    
+                        g.setColor(bloco[tabuleiro.get_tabuleiro()[i][j]].get_cor_escura());
+                        g.fillRect(COMPRIMENTO_TELA/2-LARGURA_QUADRO/2+(j*UNIDADE_DE_MEDIDA+1)-UNIDADE_DE_MEDIDA, i*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA);    
                         
-                        g.setColor(bloco[tabuleiro.get_tabuleiro()[i][j]].get_Color_C());
-                        g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+(j*UNIDADE_DE_MEDIDA+1)-UNIDADE_DE_MEDIDA, i*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA-5, UNIDADE_DE_MEDIDA-5);    
+                        g.setColor(bloco[tabuleiro.get_tabuleiro()[i][j]].get_cor_clara());
+                        g.fillRect(COMPRIMENTO_TELA/2-LARGURA_QUADRO/2+(j*UNIDADE_DE_MEDIDA+1)-UNIDADE_DE_MEDIDA, i*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA-5, UNIDADE_DE_MEDIDA-5);    
                         
-                        g.setColor(bloco[tabuleiro.get_tabuleiro()[i][j]].get_Color_P());
-                        g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+(j*UNIDADE_DE_MEDIDA+5)-UNIDADE_DE_MEDIDA, i*UNIDADE_DE_MEDIDA+5, UNIDADE_DE_MEDIDA-9, UNIDADE_DE_MEDIDA-10);                        
+                        g.setColor(bloco[tabuleiro.get_tabuleiro()[i][j]].get_cor_principal());
+                        g.fillRect(COMPRIMENTO_TELA/2-LARGURA_QUADRO/2+(j*UNIDADE_DE_MEDIDA+5)-UNIDADE_DE_MEDIDA, i*UNIDADE_DE_MEDIDA+5, UNIDADE_DE_MEDIDA-9, UNIDADE_DE_MEDIDA-10);                        
      
                         
                     }
                     else if(tabuleiro.get_tabuleiro()[i][j] < 0){
                         g.setColor(Color.DARK_GRAY);
-                        g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+(j*UNIDADE_DE_MEDIDA+1)-UNIDADE_DE_MEDIDA, i*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA);    
+                        g.fillRect(COMPRIMENTO_TELA/2-LARGURA_QUADRO/2+(j*UNIDADE_DE_MEDIDA+1)-UNIDADE_DE_MEDIDA, i*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA);    
                         
                         g.setColor(Color.LIGHT_GRAY);
-                        g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+(j*UNIDADE_DE_MEDIDA+1)-UNIDADE_DE_MEDIDA, i*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA-5, UNIDADE_DE_MEDIDA-5);    
+                        g.fillRect(COMPRIMENTO_TELA/2-LARGURA_QUADRO/2+(j*UNIDADE_DE_MEDIDA+1)-UNIDADE_DE_MEDIDA, i*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA-5, UNIDADE_DE_MEDIDA-5);    
                         
                         g.setColor(new Color(79, 79, 79));
-                        g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+(j*UNIDADE_DE_MEDIDA+5)-UNIDADE_DE_MEDIDA, i*UNIDADE_DE_MEDIDA+5, UNIDADE_DE_MEDIDA-9, UNIDADE_DE_MEDIDA-10);                        
+                        g.fillRect(COMPRIMENTO_TELA/2-LARGURA_QUADRO/2+(j*UNIDADE_DE_MEDIDA+5)-UNIDADE_DE_MEDIDA, i*UNIDADE_DE_MEDIDA+5, UNIDADE_DE_MEDIDA-9, UNIDADE_DE_MEDIDA-10);                        
                     }
                 }
             }
@@ -436,37 +455,36 @@ public class TetrisPanel extends JPanel implements ActionListener{
         g.setFont( new Font("Asai Analogue", Font.BOLD, UNIDADE_DE_MEDIDA));
         g.setColor(Color.WHITE);  
         
-        g.drawString("RECORDES",COMPRIMENTO_TELA/2+largura_quadro-(metrics.stringWidth(jogador.get_nome())/2)-UNIDADE_DE_MEDIDA*2, 2*UNIDADE_DE_MEDIDA);
+        g.drawString("RECORDES",COMPRIMENTO_TELA*3/4+UNIDADE_DE_MEDIDA-(metrics.stringWidth(jogador.get_nome())/2), 2*UNIDADE_DE_MEDIDA);
         
         for(int i = 0; i < 10 && i < recordes.size(); i++){
             jogador = recordes.get(i); 
-            g.drawString(jogador.get_nome(),COMPRIMENTO_TELA/2+largura_quadro-UNIDADE_DE_MEDIDA*3, (i+3)*UNIDADE_DE_MEDIDA);
-            g.drawString(""+jogador.get_pontos(),COMPRIMENTO_TELA/2+largura_quadro+UNIDADE_DE_MEDIDA*8-(metrics.stringWidth(""+jogador.get_pontos())/2)-UNIDADE_DE_MEDIDA*5, (i+3)*UNIDADE_DE_MEDIDA);
+            g.drawString(jogador.get_nome(),COMPRIMENTO_TELA*3/4+UNIDADE_DE_MEDIDA, (i+3)*UNIDADE_DE_MEDIDA);
+            g.drawString(""+jogador.get_pontos(),COMPRIMENTO_TELA*3/4+UNIDADE_DE_MEDIDA-(metrics.stringWidth(""+jogador.get_pontos())/2)+5*UNIDADE_DE_MEDIDA, (i+3)*UNIDADE_DE_MEDIDA);
         
         }
         
         
-        for(int i = 0; i < 22; i++){
-            for(int j = 0; j < 12; j++){               
+        for(int i = 0; i < tabuleiro.get_altura()+2; i++){
+            for(int j = 0; j < tabuleiro.get_largura()+2; j++){               
                 g.setColor(Color.DARK_GRAY);
-                g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+(j*UNIDADE_DE_MEDIDA+1)-UNIDADE_DE_MEDIDA, i*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA);    
-
+                g.fillRect(COMPRIMENTO_TELA/2-LARGURA_QUADRO/2+(j*UNIDADE_DE_MEDIDA+1)-UNIDADE_DE_MEDIDA, i*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA);
+                
                 g.setColor(Color.LIGHT_GRAY);
-                g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+(j*UNIDADE_DE_MEDIDA+1)-UNIDADE_DE_MEDIDA, i*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA-5, UNIDADE_DE_MEDIDA-5);    
+                g.fillRect(COMPRIMENTO_TELA/2-LARGURA_QUADRO/2+(j*UNIDADE_DE_MEDIDA+1)-UNIDADE_DE_MEDIDA, i*UNIDADE_DE_MEDIDA, UNIDADE_DE_MEDIDA-5, UNIDADE_DE_MEDIDA-5);    
 
                 g.setColor(new Color(79, 79, 79));
-                g.fillRect(COMPRIMENTO_TELA/2-largura_quadro/2+(j*UNIDADE_DE_MEDIDA+5)-UNIDADE_DE_MEDIDA, i*UNIDADE_DE_MEDIDA+5, UNIDADE_DE_MEDIDA-9, UNIDADE_DE_MEDIDA-10);                        
+                g.fillRect(COMPRIMENTO_TELA/2-LARGURA_QUADRO/2+(j*UNIDADE_DE_MEDIDA+5)-UNIDADE_DE_MEDIDA, i*UNIDADE_DE_MEDIDA+5, UNIDADE_DE_MEDIDA-9, UNIDADE_DE_MEDIDA-10);                        
             }
         }
         
-        g.setFont( new Font("Asai Analogue", Font.BOLD, UNIDADE_DE_MEDIDA));
-        g.setColor(Color.WHITE);
+        g.setFont( new Font("Asai Analogue", Font.BOLD, 2*UNIDADE_DE_MEDIDA));
         g.setColor(Color.BLACK);         
-        g.drawString("SCORE: "+pontos,COMPRIMENTO_TELA/2- (metrics.stringWidth("SCORE"+pontos)/2), ALTURA_TELA-3*UNIDADE_DE_MEDIDA);
-        g.drawString("LINES: "+linhas,COMPRIMENTO_TELA/2- (metrics.stringWidth("LINES: "+linhas)/2), ALTURA_TELA-4*UNIDADE_DE_MEDIDA);
-        g.drawString("LEVEL: "+level,COMPRIMENTO_TELA/2- (metrics.stringWidth("LEVEL: "+level)/2), ALTURA_TELA-5*UNIDADE_DE_MEDIDA);                     
+        g.drawString("SCORE: "+pontos,COMPRIMENTO_TELA/2- (metrics.stringWidth("SCORE"+pontos)/2), ALTURA_TELA-4*UNIDADE_DE_MEDIDA);
+        g.drawString("LINES: "+linhas,COMPRIMENTO_TELA/2- (metrics.stringWidth("LINES: "+linhas)/2), ALTURA_TELA-5*UNIDADE_DE_MEDIDA);
+        g.drawString(" LEVEL: "+level,COMPRIMENTO_TELA/2- (metrics.stringWidth("LEVEL: "+level)/2), ALTURA_TELA-6*UNIDADE_DE_MEDIDA);                     
         g.setFont( new Font("Asai Analogue", Font.BOLD, UNIDADE_DE_MEDIDA*2));
-        g.drawString("GAME OVER",COMPRIMENTO_TELA/2- (metrics.stringWidth("GAME OVER")), ALTURA_TELA/2);
+        g.drawString("GAME OVER",COMPRIMENTO_TELA/2-(metrics.stringWidth("GAME OVER")/2), ALTURA_TELA/3);
         
     }
     
@@ -504,7 +522,13 @@ public class TetrisPanel extends JPanel implements ActionListener{
             case KeyEvent.VK_DOWN:                                           
                 tabuleiro.movimenta_bloco(bloco[atual], 5);
             break;
+            
+            case KeyEvent.VK_P:
+                if(timer.isRunning())
+                    timer.stop();
+                else
+                    timer.start();
             }
         }
-    }    
+    }
 }

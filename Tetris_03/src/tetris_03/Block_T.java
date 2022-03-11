@@ -7,32 +7,27 @@ import java.awt.Color;
 
 public class Block_T extends Block{
     
-    Block_T(){        
-        final int[][][] n_variacoes={{{0,2,0},
+    Block_T(){      
+        
+        super(0,4,3,2, new Color(255,0,255), new Color(139,0,139), new Color(238,130,238));
+        
+        final int[][][] T_variacoes={{{0,2,0},
                                       {2,2,2},
                                       {0,0,0}},
                                         
-                               {{0,2,0},
-                                {2,2,0},
-                                {0,2,0}},
+                                     {{0,2,0},
+                                      {2,2,0},
+                                      {0,2,0}},
                                           
-                               {{0,0,0},
-                                {2,2,2},
-                                {0,2,0}},
+                                     {{0,0,0},
+                                      {2,2,2},
+                                      {0,2,0}},
                                           
-                               {{0,2,0},
-                                {0,2,2},
-                                {0,2,0}}};
-        
-        this.variacoes = n_variacoes;
-    
-        bloco_formato = variacoes[0];
-        variacao = 0;
-        MAXvariacoes = 4;
-        Max_T = 3;
-        
-        cor_C = new Color(238,130,238);
-        cor_P = new Color(255,0,255);       
-        cor_E = new Color(139,0,139);                 
+                                     {{0,2,0},
+                                      {0,2,2},
+                                      {0,2,0}}};
+      
+        super.set_variacoes(T_variacoes);
+        super.set_bloco_formato(T_variacoes[0]);
     }
 }
