@@ -32,6 +32,7 @@ public class TetrisFrameModificado extends javax.swing.JFrame {
         RadioButtonMedio = new javax.swing.JRadioButton();
         RadioButtonDificil = new javax.swing.JRadioButton();
         jButton1Jogar = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(0, 0, 0));
@@ -81,38 +82,46 @@ public class TetrisFrameModificado extends javax.swing.JFrame {
             }
         });
 
+        jLabel2.setText("jLabel2");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(128, 128, 128)
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)
+                .addGap(41, 41, 41)
+                .addComponent(jLabel2)
+                .addGap(43, 43, 43)
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 436, Short.MAX_VALUE)
                 .addGap(81, 81, 81))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(RadioButtonFacil)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(RadioButtonMedio)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(RadioButtonDificil))
-                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabelNome)
                         .addGap(50, 50, 50)
-                        .addComponent(nomeJogador, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1Jogar)
+                        .addComponent(nomeJogador, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jButton1Jogar)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(RadioButtonFacil)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(RadioButtonMedio)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(RadioButtonDificil)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addComponent(jLabel1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(50, 50, 50)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelNome)
@@ -122,33 +131,35 @@ public class TetrisFrameModificado extends javax.swing.JFrame {
                     .addComponent(RadioButtonFacil)
                     .addComponent(RadioButtonMedio)
                     .addComponent(RadioButtonDificil))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
+                .addGap(47, 47, 47)
                 .addComponent(jButton1Jogar)
-                .addContainerGap(59, Short.MAX_VALUE))
+                .addContainerGap(61, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void nomeJogadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nomeJogadorActionPerformed
+    private void jButton1JogarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1JogarActionPerformed
         // TODO add your handling code here:
-        this.nome = evt.toString();
-        
-    }//GEN-LAST:event_nomeJogadorActionPerformed
+        System.out.println(evt);
+        this.nome = nomeJogador.getText();
+        JFrame x = new JFrame();
+        TetrisPanel tp= new TetrisPanel(x, this.dificuldade, this.nome);
+        x.add(tp);
+        x.setTitle("Tetris");
+        x.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        x.setResizable(true);
+        x.pack();
+        x.setVisible(true);
+        x.setLocationRelativeTo(null);
+        this.setVisible(false);
+
+    }//GEN-LAST:event_jButton1JogarActionPerformed
 
     private void RadioButtonDificilActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RadioButtonDificilActionPerformed
         // TODO add your handling code here:
         this.dificuldade = 40;
     }//GEN-LAST:event_RadioButtonDificilActionPerformed
-
-    private void jButton1JogarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1JogarActionPerformed
-        // TODO add your handling code here:
-        TetrisPanel tp= new TetrisPanel(this, this.dificuldade, this.nome);            
-       
-   
-        this.setVisible(true);
-        this.setLocationRelativeTo(null);  
-    }//GEN-LAST:event_jButton1JogarActionPerformed
 
     private void RadioButtonMedioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RadioButtonMedioActionPerformed
         // TODO add your handling code here:
@@ -159,6 +170,13 @@ public class TetrisFrameModificado extends javax.swing.JFrame {
         // TODO add your handling code here:
         this.dificuldade = 1;
     }//GEN-LAST:event_RadioButtonFacilActionPerformed
+
+    private void nomeJogadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nomeJogadorActionPerformed
+        // TODO add your handling code here:
+        this.nome = nomeJogador.getText();
+        System.out.println(nome);
+
+    }//GEN-LAST:event_nomeJogadorActionPerformed
 
     /**
      * @param args the command line arguments
@@ -202,6 +220,7 @@ public class TetrisFrameModificado extends javax.swing.JFrame {
     private javax.swing.ButtonGroup dificuldades;
     private javax.swing.JButton jButton1Jogar;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabelNome;
     private javax.swing.JTextField nomeJogador;
     // End of variables declaration//GEN-END:variables
