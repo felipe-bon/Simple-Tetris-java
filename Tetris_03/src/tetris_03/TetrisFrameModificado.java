@@ -2,6 +2,10 @@
 package tetris_03;
 
 import javax.swing.JFrame;
+import java.io.File;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+
 
 public class TetrisFrameModificado extends javax.swing.JFrame {
 
@@ -13,6 +17,24 @@ public class TetrisFrameModificado extends javax.swing.JFrame {
      */
     public TetrisFrameModificado() {
         initComponents();
+        // tem que construir em outra classe o play sound e fazer a música de 
+        // abertura e sons para quando destruir a linha, se for o caso...
+        File tetrisMusic = new File("tetrisTheme.wav");
+        playSound(tetrisMusic);
+    }
+    public void playSound(File Sound){
+        try{
+            Clip clip = AudioSystem.getClip();
+            clip.open(AudioSystem.getAudioInputStream(Sound));
+            clip.start();
+            
+            // pode colocar ou não a thread para tocar e sair ou apenas tocar e ficar no app
+            Thread.sleep(clip.getMicrosecondLength() / 1000);
+        }
+        catch(Exception e) {
+            System.out.println(e);
+            
+        }
     }
 
     /**
@@ -178,7 +200,7 @@ public class TetrisFrameModificado extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
 <<<<<<< HEAD
-    private void jButton1JogarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1JogarActionPerformed
+    private void jButton1JogarActionPerformed(java.awt.event.ActionEvent evt) {                                              
         // TODO add your handling code here:
         System.out.println(evt);
         this.nome = nomeJogador.getText();
@@ -193,13 +215,13 @@ public class TetrisFrameModificado extends javax.swing.JFrame {
         x.setLocationRelativeTo(null);
         this.setVisible(false);
 
-    }//GEN-LAST:event_jButton1JogarActionPerformed
+    }                                             
 =======
-    private void nomeJogadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nomeJogadorActionPerformed
+    private void nomeJogadorActionPerformed(java.awt.event.ActionEvent evt) {                                            
         // TODO add your handling code here:
         this.nome = evt.toString();
         
-    }//GEN-LAST:event_nomeJogadorActionPerformed
+    }                                           
 >>>>>>> 45e3d2d187b90dcbcbcdfa8d2bb69145e9c3b482
 
     private void RadioButtonDificilActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RadioButtonDificilActionPerformed
