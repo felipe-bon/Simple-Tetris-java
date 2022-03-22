@@ -18,7 +18,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -41,12 +40,12 @@ public class TetrisPanel extends JPanel implements ActionListener{
     private final Board tabuleiro;
     private final Block bloco[]; 
     private final Block miniatura[];
+    private final int contagem[];
     private final String nome;
     private Player jogador;
     private ArrayList<Player> recordes;
-    private HashMap<Block,Integer> contador;
     private boolean rodando = false;
-    private boolean modo_segas, modo_petrifica;
+    private final boolean modo_segas, modo_petrifica;
     private int atual;
     private int proximo;
     private final int inicial_delay;
@@ -87,7 +86,7 @@ public class TetrisPanel extends JPanel implements ActionListener{
         this.setPreferredSize(SIZE);        
         this.setBackground(Color.BLACK);
         this.setFocusable(true);
-        this.addKeyListener(new adaptador_tecla());   
+        this.addKeyListener(new adaptador_tecla()); 
         this.modo_segas = segas;
         this.modo_petrifica = petrifica;
         this.fr = frame;
@@ -103,8 +102,9 @@ public class TetrisPanel extends JPanel implements ActionListener{
         this.novo_jogo.setVisible(false);   
         this.r = new Random();
         this.atual = r.nextInt(7)+1;
+        this.contagem = new int[8];
+        this.contagem[atual]++;
         this.proximo = r.nextInt(7)+1;                 
-        this.contador = new HashMap();
         this.bloco = new Block[8];
         
         bloco[1] = new Block_I();
@@ -156,9 +156,17 @@ public class TetrisPanel extends JPanel implements ActionListener{
             escritor.write(jogador.get_nome()+";"+jogador.get_pontos());
             escritor.newLine();
             escritor.flush();
-            escritor.close();// mudar
+            
         }catch(IOException e){
             e.printStackTrace();
+        }
+        finally{
+            try{
+                escritor.close();
+            }
+            catch(Exception e){
+                
+            }
         }
         
         // le o arquivo recordes e salva no arrayList os jogadores em ordem decrescente de pontos
@@ -169,7 +177,7 @@ public class TetrisPanel extends JPanel implements ActionListener{
             arquivo = new BufferedReader(fr);
             while((l = arquivo.readLine()) != null){
                 String[] dado = l.split(";");                
-                jogador = new Player(dado[0], Integer.parseInt(dado[1]));// sort aqui
+                jogador = new Player(dado[0], Integer.parseInt(dado[1]));
                 while(i < recordes.size() && recordes.get(i).get_pontos() > jogador.get_pontos())
                     i++;
                 recordes.add(i, jogador);
@@ -206,12 +214,13 @@ public class TetrisPanel extends JPanel implements ActionListener{
                 
             if(modo_petrifica){
                 conta_bloco++;
-                if(conta_bloco == tabuleiro.get_largura()/2){
+                if(conta_bloco == tabuleiro.get_largura()){
                     tabuleiro.petrifica();
                     conta_bloco = 0;
                 }
             }
-                atual = proximo;               
+                atual = proximo;  
+                contagem[atual]++;
                 proximo = r.nextInt(7)+1;
                 
                 // da new no bloco que caíra agora
@@ -299,7 +308,7 @@ public class TetrisPanel extends JPanel implements ActionListener{
     
     private void desenha_tabuleiro(Graphics g){
         
-        // escreve as informações na tela
+        // desenha as informações na tela
         g.setColor(Color.LIGHT_GRAY);
         g.setFont( new Font("Asai Analogue", Font.BOLD, 2*UNIDADE_DE_MEDIDA));
         FontMetrics metrics = getFontMetrics(g.getFont());
@@ -329,9 +338,9 @@ public class TetrisPanel extends JPanel implements ActionListener{
             }
         }
         // desenha as caixas de cada tipo de bloco   
-        for(int k = 0; k < 7; k++){
-            for(int i = 0; i < 6; i++){
-                for(int j = 0; j < 7; j++){
+        for(int k = 0; k < 7; k++)
+            for(int i = 0; i < 6; i++)
+                for(int j = 0; j < 7; j++)
                     if(i == 0 || i == 5 || j == 0 || j == 6){
                         g.setColor(Color.DARK_GRAY);
                         g.fillRect(COMPRIMENTO_TELA/3-LARGURA_QUADRO/2+(j*nUnidade+1)-3*nUnidade, k*8*nUnidade+i*nUnidade, nUnidade, nUnidade);    
@@ -342,14 +351,11 @@ public class TetrisPanel extends JPanel implements ActionListener{
                         g.setColor(new Color(79,79,79));
                         g.fillRect(COMPRIMENTO_TELA/3-LARGURA_QUADRO/2+(j*nUnidade+5)-3*nUnidade, k*8*nUnidade+i*nUnidade+5, nUnidade-9, nUnidade-10);                                 
                     }
-                }
-            }            
-        }
-        
+                
         //desenha as miniaturas de cada bloco para fazer a contagem
         for(int k = 1; k < 8; k++){
-            for(int i = 1; i < miniatura[k].get_max_tamanho()+1; i++){
-                for(int j = 1; j < miniatura[k].get_max_tamanho()+1; j++){
+            for(int i = 1; i < miniatura[k].get_max_tamanho()+1; i++)
+                for(int j = 1; j < miniatura[k].get_max_tamanho()+1; j++)
                     if(miniatura[k].get_bloco_formato()[i-1][j-1] != 0){
                         g.setColor(miniatura[k].get_cor_escura());
                         g.fillRect(COMPRIMENTO_TELA/3-LARGURA_QUADRO/2+(j*nUnidade+1)-2*nUnidade, (k-1)*8*nUnidade+i*nUnidade, nUnidade, nUnidade);    
@@ -360,16 +366,16 @@ public class TetrisPanel extends JPanel implements ActionListener{
                         g.setColor(miniatura[k].get_cor_principal());
                         g.fillRect(COMPRIMENTO_TELA/3-LARGURA_QUADRO/2+(j*nUnidade+5)-2*nUnidade, (k-1)*8*nUnidade+i*nUnidade+5, nUnidade-9, nUnidade-10);                                 
                     }  
-                }
-            }
-            //g.drawString(""+contador[k],COMPRIMENTO_TELA/2-largura_quadro, k*8*nUnidade); escreve a quantidade de cada bloco
+            
+            g.setFont( new Font("Asai Analogue", Font.BOLD, UNIDADE_DE_MEDIDA));
+            g.drawString(""+contagem[k],COMPRIMENTO_TELA/2-LARGURA_QUADRO+nUnidade*2, k*8*nUnidade-5); 
         }
         
         if(rodando){ 
             
             if(!modo_segas){
                 //desenha o proximo bloco na caixa de proximo bloco
-                for(int i = 1; i < bloco[0].get_max_tamanho()+1; i++){
+                for(int i = 1; i < bloco[0].get_max_tamanho()+1; i++)
                     for(int j = 1; j < bloco[0].get_max_tamanho()+1; j++){
                         if(bloco[0].get_bloco_formato()[i-1][j-1] != 0){
                             g.setColor(bloco[0].get_cor_escura());
@@ -382,7 +388,7 @@ public class TetrisPanel extends JPanel implements ActionListener{
                             g.fillRect(COMPRIMENTO_TELA/2+LARGURA_QUADRO+(j*nUnidade+5+nUnidade)-3*nUnidade, 5*nUnidade+i*nUnidade+5, nUnidade-9, nUnidade-10);                                 
                         }
                     }
-                }    
+                    
             }
             // desenha a malha quadriculada do fundo
             g.setColor(Color.darkGray);
