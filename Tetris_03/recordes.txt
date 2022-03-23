@@ -1,5 +1,7 @@
 Felipe;6400
+Pedro;3100
 Marcus;1200
 Adalberto;2000
-caio;900
+Caio;900
+
 
