@@ -1,12 +1,6 @@
 package Jogo;
 
 import javax.swing.JFrame;
-// importação de libs para abertura de arquivos e música
-import java.io.File;
-import javax.sound.sampled.*;
-import java.applet.Applet;
-import java.applet.AudioClip;
-import java.net.URL;
 
 public class TetrisFrame extends javax.swing.JFrame {
     int dificuldade;
@@ -22,8 +16,6 @@ public class TetrisFrame extends javax.swing.JFrame {
         this.modo_petrifica = false;
         this.nome = "SemNome";
         initComponents();
-        URL som = TetrisFrame.class.getResource("tetrisTheme.wav");
-        AudioClip Som = Applet.newAudioClip(som);
         this.setVisible(true);
         this.pack();
     }
@@ -292,7 +284,7 @@ public class TetrisFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_Button_JogarActionPerformed
 
     private void jRadioButton_QuadradoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton_QuadradoActionPerformed
-        this.tabuleiro = 2;
+        this.tabuleiro = 3;
     }//GEN-LAST:event_jRadioButton_QuadradoActionPerformed
 
     private void jRadioButton_AsCegasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton_AsCegasActionPerformed

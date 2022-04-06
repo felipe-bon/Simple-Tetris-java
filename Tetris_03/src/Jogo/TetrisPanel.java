@@ -3,6 +3,7 @@ package Jogo;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Toolkit;
@@ -19,6 +20,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -32,6 +35,7 @@ public class TetrisPanel extends JPanel implements ActionListener{
     private final int ALTURA_QUADRO;
     private final int LARGURA_QUADRO;
 
+    private Font fonte;
     private int pontos;
     private int linhas;
     private int level;
@@ -40,6 +44,7 @@ public class TetrisPanel extends JPanel implements ActionListener{
     private final Block miniatura[];
     private final HashMap<Block, Integer> contagem;
     private final String nome;
+    private int opcao;
     private Player jogador;
     private ArrayList<Player> recordes;
     private boolean rodando;
@@ -54,6 +59,8 @@ public class TetrisPanel extends JPanel implements ActionListener{
     private final JButton novo_jogo;    
         
     TetrisPanel(JFrame frame, int opcao, boolean cegas, boolean petrifica, int dificuldade, String Nome){
+        
+        this.opcao = opcao;
         switch (opcao){
             case 1:
                 this.tabuleiro = new Board();// padrão
@@ -81,6 +88,7 @@ public class TetrisPanel extends JPanel implements ActionListener{
         this.setBackground(Color.BLACK);
         this.setFocusable(true);
         this.addKeyListener(new adaptador_tecla()); 
+        this.fonte = null;
         this.modo_cegas = cegas;
         this.modo_petrifica = petrifica;
         this.rodando = false;
@@ -101,6 +109,13 @@ public class TetrisPanel extends JPanel implements ActionListener{
         this.contagem = new HashMap<Block, Integer>();
         this.miniatura = Block.get_representantes(); 
         
+        try {
+            fonte = Font.createFont(Font.TRUETYPE_FONT, getClass().getClassLoader().getResourceAsStream("Jogo/Asai-Analogue.ttf"));
+        } catch (FontFormatException | IOException ex) { 
+            Logger.getLogger(TetrisPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        fonte = fonte.deriveFont(Font.BOLD, UNIDADE_DE_MEDIDA*2);
+        
         for(int i = 0; i < miniatura.length; i++)
             contagem.put(miniatura[i], 0);
         
@@ -116,7 +131,7 @@ public class TetrisPanel extends JPanel implements ActionListener{
     @Override
     protected void paintComponent(Graphics g){
         super.paintComponent(g);
-        desenha_tabuleiro(g);     
+        desenha_tabuleiro(g);   
     }
     
     private void quadro_de_pontos(){
@@ -219,30 +234,41 @@ public class TetrisPanel extends JPanel implements ActionListener{
     private void desenha_tabuleiro(Graphics g){
         // desenha as informações na tela
         g.setColor(Color.LIGHT_GRAY);
-        g.setFont( new Font("Asai Analogue", Font.BOLD, 2*UNIDADE_DE_MEDIDA));
+        g.setFont(this.fonte);
+        
         int nUnidade = (ALTURA_TELA-(ALTURA_TELA/(tabuleiro.get_largura()+2)))/(52);//nova unidade de medida para desenhar as miniaturas dos blocos;
 
+        int lugar = 7*UNIDADE_DE_MEDIDA;
+        int lugar2 = 3*nUnidade;
+        if(this.opcao == 3){
+            lugar = 5*UNIDADE_DE_MEDIDA;
+            lugar2 = 12*nUnidade;
+            fonte = fonte.deriveFont(Font.BOLD, UNIDADE_DE_MEDIDA*3/2);
+        }
+        
         FontMetrics metrics = getFontMetrics(g.getFont());
         if(!modo_cegas)
-            g.drawString("NEXT: ",COMPRIMENTO_TELA/2+LARGURA_QUADRO-3*nUnidade, UNIDADE_DE_MEDIDA);
-        g.drawString("SCORE:"+pontos,COMPRIMENTO_TELA-(metrics.stringWidth("SCORE"+pontos)/3)-6*UNIDADE_DE_MEDIDA, ALTURA_TELA-4*UNIDADE_DE_MEDIDA);
-        g.drawString("LINES:"+linhas,COMPRIMENTO_TELA-(metrics.stringWidth("LINES:"+linhas)/3)-6*UNIDADE_DE_MEDIDA, ALTURA_TELA-6*UNIDADE_DE_MEDIDA);
-        g.drawString(" LEVEL:"+level,COMPRIMENTO_TELA-(metrics.stringWidth("LEVEL:"+level)/3)-6*UNIDADE_DE_MEDIDA, ALTURA_TELA-8*UNIDADE_DE_MEDIDA);
+            g.drawString("NEXT: ",COMPRIMENTO_TELA/2+LARGURA_QUADRO-lugar2, UNIDADE_DE_MEDIDA);
+        
+        g.drawString("SCORE:"+pontos,COMPRIMENTO_TELA-(metrics.stringWidth("SCORE"+pontos)/3)-lugar, ALTURA_TELA-4*UNIDADE_DE_MEDIDA);
+        g.drawString("LINES:"+linhas,COMPRIMENTO_TELA-(metrics.stringWidth("LINES:"+linhas)/3)-lugar, ALTURA_TELA-6*UNIDADE_DE_MEDIDA);
+        g.drawString(" LEVEL:"+level,COMPRIMENTO_TELA-(metrics.stringWidth("LEVEL:"+level)/3)-lugar, ALTURA_TELA-8*UNIDADE_DE_MEDIDA);
         
         
         // desenha a caixa de proximo bloco  
         if(!modo_cegas){
+        
             for(int i = 0; i < 7; i++){
                 for(int j = 0; j < 7; j++){
                     if(i == 0 || i == 6 || j == 0 || j == 6){
                         g.setColor(Color.DARK_GRAY);
-                        g.fillRect(COMPRIMENTO_TELA/2+LARGURA_QUADRO+(j*nUnidade+1)-3*nUnidade, 4*nUnidade+i*nUnidade, nUnidade, nUnidade);    
+                        g.fillRect(COMPRIMENTO_TELA/2+LARGURA_QUADRO+(j*nUnidade+1)-lugar2, 4*nUnidade+i*nUnidade, nUnidade, nUnidade);    
 
                         g.setColor(Color.LIGHT_GRAY);
-                        g.fillRect(COMPRIMENTO_TELA/2+LARGURA_QUADRO+(j*nUnidade+1)-3*nUnidade, 4*nUnidade+i*nUnidade, nUnidade-5, nUnidade-5);    
+                        g.fillRect(COMPRIMENTO_TELA/2+LARGURA_QUADRO+(j*nUnidade+1)-lugar2, 4*nUnidade+i*nUnidade, nUnidade-5, nUnidade-5);    
 
                         g.setColor(new Color(79,79,79));
-                        g.fillRect(COMPRIMENTO_TELA/2+LARGURA_QUADRO+(j*nUnidade+5)-3*nUnidade, 4*nUnidade+i*nUnidade+5, nUnidade-9, nUnidade-10);                                 
+                        g.fillRect(COMPRIMENTO_TELA/2+LARGURA_QUADRO+(j*nUnidade+5)-lugar2, 4*nUnidade+i*nUnidade+5, nUnidade-9, nUnidade-10);                                 
                     }
                 }
             }
@@ -278,10 +304,15 @@ public class TetrisPanel extends JPanel implements ActionListener{
                     }  
             
             //COMPRIMENTO_TELA/2-LARGURA_QUADRO+nUnidade*2
-            g.setFont( new Font("Asai Analogue", Font.BOLD, UNIDADE_DE_MEDIDA));
-            g.drawString(""+contagem.get(miniatura[k]),12*nUnidade, (k+1)*7*nUnidade); 
+            g.setFont(this.fonte);
+            this.fonte.deriveFont(UNIDADE_DE_MEDIDA);
+            if(this.opcao == 3)
+                lugar2 = nUnidade;
+            g.drawString(""+contagem.get(miniatura[k]),4*lugar2, (k+1)*7*nUnidade); 
         }
         
+        if(opcao == 3)
+            lugar2 = 12*nUnidade;
         if(rodando){ 
             if(!modo_cegas){
                 //desenha o proximo bloco na caixa de proximo bloco
@@ -289,13 +320,13 @@ public class TetrisPanel extends JPanel implements ActionListener{
                     for(int j = 1; j < proximo.get_max_tamanho()+1; j++){
                         if(proximo.get_bloco_formato()[i-1][j-1] != 0){
                             g.setColor(proximo.get_cor_escura());
-                            g.fillRect(COMPRIMENTO_TELA/2+LARGURA_QUADRO+(j*nUnidade+1+nUnidade)-3*nUnidade, 5*nUnidade+i*nUnidade, nUnidade, nUnidade);    
+                            g.fillRect(COMPRIMENTO_TELA/2+LARGURA_QUADRO+(j*nUnidade+1+nUnidade)-lugar2, 5*nUnidade+i*nUnidade, nUnidade, nUnidade);    
 
                             g.setColor(proximo.get_cor_clara());
-                            g.fillRect(COMPRIMENTO_TELA/2+LARGURA_QUADRO+(j*nUnidade+1+nUnidade)-3*nUnidade, 5*nUnidade+i*nUnidade, nUnidade-5, nUnidade-5);    
+                            g.fillRect(COMPRIMENTO_TELA/2+LARGURA_QUADRO+(j*nUnidade+1+nUnidade)-lugar2, 5*nUnidade+i*nUnidade, nUnidade-5, nUnidade-5);    
 
                             g.setColor(proximo.get_cor_principal());
-                            g.fillRect(COMPRIMENTO_TELA/2+LARGURA_QUADRO+(j*nUnidade+5+nUnidade)-3*nUnidade, 5*nUnidade+i*nUnidade+5, nUnidade-9, nUnidade-10);                                 
+                            g.fillRect(COMPRIMENTO_TELA/2+LARGURA_QUADRO+(j*nUnidade+5+nUnidade)-lugar2, 5*nUnidade+i*nUnidade+5, nUnidade-9, nUnidade-10);                                 
                         }
                     }    
             }
@@ -360,15 +391,17 @@ public class TetrisPanel extends JPanel implements ActionListener{
         g.setColor(Color.BLACK);
         g.fillRect(0,0,COMPRIMENTO_TELA,ALTURA_TELA);
   
-        FontMetrics metrics = getFontMetrics(g.getFont());
-        g.setFont( new Font("Asai Analogue", Font.BOLD, UNIDADE_DE_MEDIDA));
+        //nte = fonte.deriveFont(Font.BOLD, UNIDADE_DE_MEDIDA*2);
+        g.setFont(new Font("SansSerif", Font.BOLD,UNIDADE_DE_MEDIDA));
+        this.fonte.deriveFont(5);
         g.setColor(Color.WHITE);  
-        
-        g.drawString("RECORDES",COMPRIMENTO_TELA*3/4+UNIDADE_DE_MEDIDA-(metrics.stringWidth(jogador.get_nome())/2), 2*UNIDADE_DE_MEDIDA);
-        
+        FontMetrics metrics = getFontMetrics(g.getFont());
+
+        g.drawString("RECORDES",COMPRIMENTO_TELA*3/4+UNIDADE_DE_MEDIDA, 2*UNIDADE_DE_MEDIDA);
+        g.setFont(new Font("",Font.BOLD,UNIDADE_DE_MEDIDA/2));
         for(int i = 0; i < 10 && i < recordes.size(); i++){
             jogador = recordes.get(i); 
-            g.drawString(jogador.get_nome(),COMPRIMENTO_TELA*3/4+UNIDADE_DE_MEDIDA, (i+3)*UNIDADE_DE_MEDIDA);
+            g.drawString(jogador.get_nome(),COMPRIMENTO_TELA*3/4+UNIDADE_DE_MEDIDA-(metrics.stringWidth(jogador.get_nome())/2)+2*UNIDADE_DE_MEDIDA, (i+3)*UNIDADE_DE_MEDIDA);
             g.drawString(""+jogador.get_pontos(),COMPRIMENTO_TELA*3/4+UNIDADE_DE_MEDIDA-(metrics.stringWidth(""+jogador.get_pontos())/2)+5*UNIDADE_DE_MEDIDA, (i+3)*UNIDADE_DE_MEDIDA);
         
         }
@@ -385,12 +418,13 @@ public class TetrisPanel extends JPanel implements ActionListener{
                 g.fillRect(COMPRIMENTO_TELA/2-LARGURA_QUADRO/2+(j*UNIDADE_DE_MEDIDA+5)-UNIDADE_DE_MEDIDA, i*UNIDADE_DE_MEDIDA+5, UNIDADE_DE_MEDIDA-9, UNIDADE_DE_MEDIDA-10);                        
             }
         
-        g.setFont( new Font("Asai Analogue", Font.BOLD, 2*UNIDADE_DE_MEDIDA));
+        g.setFont(this.fonte);
+        this.fonte.deriveFont(UNIDADE_DE_MEDIDA);
         g.setColor(Color.BLACK);         
         g.drawString("SCORE: "+pontos,COMPRIMENTO_TELA/2- (metrics.stringWidth("SCORE"+pontos)/2), ALTURA_TELA-4*UNIDADE_DE_MEDIDA);
         g.drawString("LINES: "+linhas,COMPRIMENTO_TELA/2- (metrics.stringWidth("LINES: "+linhas)/2), ALTURA_TELA-5*UNIDADE_DE_MEDIDA);
         g.drawString(" LEVEL: "+level,COMPRIMENTO_TELA/2- (metrics.stringWidth("LEVEL: "+level)/2), ALTURA_TELA-6*UNIDADE_DE_MEDIDA);                     
-        g.setFont( new Font("Asai Analogue", Font.BOLD, UNIDADE_DE_MEDIDA*2));
+        this.fonte.deriveFont(UNIDADE_DE_MEDIDA*2);
         g.drawString("GAME OVER",COMPRIMENTO_TELA/2-(metrics.stringWidth("GAME OVER")/2), ALTURA_TELA/3);   
     }
     
